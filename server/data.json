@@ -1,0 +1,90 @@
+{
+  "categories": [
+    {
+      "id": "cat1",
+      "name": "Venue",
+      "icon": "🏛️"
+    },
+    {
+      "id": "cat2",
+      "name": "Photography",
+      "icon": "📷"
+    },
+    {
+      "id": "cat3",
+      "name": "Catering",
+      "icon": "🍽️"
+    },
+    {
+      "id": "cat4",
+      "name": "Decor",
+      "icon": "🪔"
+    },
+    {
+      "id": "cat5",
+      "name": "MakeUp",
+      "icon": "💄"
+    },
+    {
+      "id": "cat6",
+      "name": "Cakes",
+      "icon": "🎂"
+    },
+    {
+      "id": "cat7",
+      "name": "Bridal Dress",
+      "icon": "👗"
+    },
+    {
+      "id": "cat8",
+      "name": "Groom Dress",
+      "icon": "🤵"
+    },
+    {
+      "id": "cat10",
+      "name": "Music & Dance",
+      "icon": "🎵"
+    },
+    {
+      "id": "cat11",
+      "name": "Anchor",
+      "icon": "🎤"
+    },
+    {
+      "id": "cat_1774986542164",
+      "name": "Cocktail Service",
+      "icon": "🍷"
+    },
+    {
+      "id": "cat12",
+      "name": "Other Vendors",
+      "icon": "🎉"
+    }
+  ],
+  "vendors": [
+    {
+      "id": "v1",
+      "catId": "cat2",
+      "name": "RMediaFotos",
+      "place": "Edapally",
+      "phone": "+91 9847825758",
+      "email": "rmediafotos@gmail.com",
+      "price": "₹65,000 – ₹1,60,000",
+      "rating": 5,
+      "notes": "Photos are better,but not the video",
+      "instaId": "rmediafotos"
+    },
+    {
+      "id": "v2",
+      "catId": "cat3",
+      "name": "Harvest catering",
+      "place": "Thrissur",
+      "phone": "+91 9072990505",
+      "email": "harvesthomarketing@gmail.com",
+      "price": "As per request",
+      "rating": 5,
+      "notes": "One of the best in kerala",
+      "instaId": "harvestcatererspvtltd"
+    }
+  ]
+}

@@ -1,0 +1,253 @@
+.page {
+  min-height: 100vh;
+  background-color: #f9e4e4;
+  padding: 32px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.back-btn {
+  background: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #7b2d52;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: #7b2d52;
+  color: white;
+}
+
+.page-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+/* ── VENDOR TILES ── */
+.vendors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.vendor-tile {
+  background: white;
+  border-radius: 16px;
+  padding: 24px 24px 48px;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.vendor-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.vendor-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d2d2d;
+  margin-bottom: 12px;
+}
+
+.vendor-info {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.vendor-price {
+  font-size: 0.85rem;
+  color: #7b2d52;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.vendor-arrow {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  color: #7b2d52;
+  font-size: 1.1rem;
+}
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center;
+  padding: 64px 32px;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.empty-text {
+  font-size: 1.1rem;
+  color: #888;
+}
+
+/* ── FAB ── */
+.fab {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #7b2d52;
+  color: white;
+  font-size: 1.8rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(123,45,82,0.4);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fab:hover {
+  background: #9b3d62;
+  transform: scale(1.1);
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  background: white;
+  border-radius: 24px;
+  padding: 36px;
+  width: min(480px, 92vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  animation: modalIn 0.25s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2d2d2d;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #aaa;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #f0e0e0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-family: 'Segoe UI', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+  background: #fdfafa;
+  color: #2d2d2d;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #7b2d52;
+  background: white;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.btn-cancel {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1.5px solid #f0e0e0;
+  background: white;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-family: 'Segoe UI', sans-serif;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  border-color: #7b2d52;
+  color: #7b2d52;
+}
+
+.btn-save {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: #7b2d52;
+  color: white;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: 'Segoe UI', sans-serif;
+  transition: all 0.2s;
+}
+
+.btn-save:hover {
+  background: #9b3d62;
+}
+
+@media (max-width: 600px) {
+  .vendors-grid {
+    grid-template-columns: 1fr;
+  }
+}

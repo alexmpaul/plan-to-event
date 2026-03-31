@@ -1,0 +1,58 @@
+<!-- HERO SECTION -->
+<div class="hero">
+  <nav class="navbar">
+    <div class="logo">Plan To Event</div>
+  </nav>
+
+  <div class="hero-content">
+    <div class="hero-card">
+      <h1 class="hero-title">Lets make the <span>EVENT</span> happen</h1>
+      <p class="hero-sub">Create Event, add vendors, compare, track budgets, manage guests and many more – all in one place.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" (click)="scrollToVendors()">Plan your Event</button>
+        <button class="btn-secondary">Learn More</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VENDORS SECTION -->
+<div class="vendors-section" id="vendors-section">
+  <h2 class="section-title">Find vendors for any Event</h2>
+
+  <div class="categories-grid">
+    @for (cat of categories; track cat.id) {
+      <div class="cat-card" (click)="goToVendors(cat.id)">
+        <div class="cat-circle">
+          <span class="cat-icon">{{ cat.icon }}</span>
+        </div>
+        <div class="cat-name">{{ cat.name }}</div>
+      </div>
+    }
+    <!-- FLOATING ADD BUTTON -->
+  <button class="fab" (click)="openModal()">+</button>
+  </div>
+</div>
+
+<!-- ADD CATEGORY MODAL -->
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2 class="modal-title">Add Category</h2>
+
+      <div class="form-group">
+        <label>Category Name *</label>
+        <input [(ngModel)]="newCategory.name" placeholder="e.g. Makeup & Beauty" />
+      </div>
+      <div class="form-group">
+        <label>Icon (emoji)</label>
+        <input [(ngModel)]="newCategory.icon" placeholder="e.g. 💄" maxlength="4" />
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="closeModal()">Cancel</button>
+        <button class="btn-save" (click)="saveCategory()">Add Category</button>
+      </div>
+    </div>
+  </div>
+}
