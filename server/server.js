@@ -11,8 +11,10 @@ app.use(bodyParser.json());
 const SPREADSHEET_ID = '1V0WYlZ7N6f90boqeYiibYekLwQrc1eUrThCDPdVdsr8';
 
 // Load credentials from the JSON file you downloaded
+const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+
 const auth = new google.auth.GoogleAuth({
-  keyFile: path.join(__dirname, 'credentials.json'),
+  credentials,
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
