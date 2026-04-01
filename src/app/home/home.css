@@ -46,7 +46,7 @@
 
 .hero-card {
   background: rgba(110, 110, 110, 0.2);
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(4px);
   border-radius: 24px;
   padding: 56px 64px;
   text-align: center;
@@ -55,7 +55,7 @@
 
 .hero-title {
   font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
+  font-weight: 500;
   color: white;
   margin-bottom: 16px;
   font-family: 'Segoe UI', sans-serif;
