@@ -11,7 +11,9 @@ app.use(bodyParser.json());
 const SPREADSHEET_ID = '1V0WYlZ7N6f90boqeYiibYekLwQrc1eUrThCDPdVdsr8';
 
 // Load credentials from the JSON file you downloaded
-const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+const credentials = process.env.GOOGLE_CREDENTIALS 
+  ? JSON.parse(process.env.GOOGLE_CREDENTIALS)
+  : require('./credentials.json');
 
 const auth = new google.auth.GoogleAuth({
   credentials,

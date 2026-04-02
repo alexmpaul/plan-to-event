@@ -1,113 +1,73 @@
-.page {
+
+.vendors-section {
   min-height: 100vh;
   background-color: #f9e4e4;
-  padding: 32px;
+  padding: 64px 32px;
   font-family: 'Segoe UI', sans-serif;
+  position: relative;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 32px;
+.section-title {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #2d2d2d;
+  margin-bottom: 48px;
 }
 
-.back-btn {
-  background: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  color: #7b2d52;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  transition: all 0.2s;
-}
-
-.back-btn:hover {
-  background: #7b2d52;
-  color: white;
-}
-
-.page-title {
-  padding: 3px 14px;
-  font-size: 20px;
-  color: #7b2d52;
-  font-weight: 500;
-}
-
-/* ── VENDOR TILES ── */
-.vendors-grid {
+.categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 32px 16px;
   max-width: 1000px;
   margin: 0 auto;
+  padding-bottom: 80px;
 }
 
-.vendor-tile {
-  background: white;
-  border-radius: 16px;
-  padding: 24px 24px 48px;
+.cat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
   cursor: pointer;
-  position: relative;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s;
 }
 
-.vendor-tile:hover {
+.cat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
-.vendor-name {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #2d2d2d;
-  margin-bottom: 12px;
+.cat-circle {
+  width: 110px;
+  height: 110px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: box-shadow 0.2s;
 }
 
-.vendor-info {
-  font-size: 0.85rem;
-  color: #666;
-  margin-bottom: 6px;
+.cat-card:hover .cat-circle {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
 }
 
-.vendor-price {
-  font-size: 0.85rem;
-  color: #7b2d52;
-  margin-top: 8px;
+.cat-icon {
+  font-size: 2.5rem;
+}
+
+.cat-name {
+  font-size: 0.9rem;
   font-weight: 500;
-}
-
-.vendor-arrow {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  color: #7b2d52;
-  font-size: 1.1rem;
-}
-
-/* ── EMPTY STATE ── */
-.empty {
+  color: #2d2d2d;
   text-align: center;
-  padding: 64px 32px;
-}
-
-.empty-icon {
-  font-size: 3rem;
-  margin-bottom: 16px;
-}
-
-.empty-text {
-  font-size: 1.1rem;
-  color: #888;
 }
 
 /* ── FAB ── */
 .fab {
-  position: fixed;
-  bottom: 32px;
+  position: absolute;
+  bottom: 30px;
   right: 32px;
   width: 56px;
   height: 56px;
@@ -145,9 +105,7 @@
   background: white;
   border-radius: 24px;
   padding: 36px;
-  width: min(480px, 92vw);
-  max-height: 85vh;
-  overflow-y: auto;
+  width: min(400px, 92vw);
   box-shadow: 0 20px 60px rgba(0,0,0,0.15);
   animation: modalIn 0.25s ease;
 }
@@ -178,9 +136,7 @@
   font-weight: 500;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.form-group input {
   width: 100%;
   padding: 10px 14px;
   border: 1.5px solid #f0e0e0;
@@ -193,16 +149,9 @@
   color: #2d2d2d;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.form-group input:focus {
   border-color: #7b2d52;
   background: white;
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 80px;
 }
 
 .modal-actions {
@@ -247,8 +196,20 @@
   background: #9b3d62;
 }
 
-@media (max-width: 600px) {
-  .vendors-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .categories-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .hero-card {
+    padding: 36px 24px;
+  }
+  .navbar {
+    padding: 16px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

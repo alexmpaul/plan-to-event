@@ -30,13 +30,11 @@
 }
 
 .category-badge {
-  background: white;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  padding: 3px 14px;
+  border-radius: 5px;
+  font-size: 20px;
   color: #7b2d52;
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .detail-card {
