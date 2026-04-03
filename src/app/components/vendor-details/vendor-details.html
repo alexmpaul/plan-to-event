@@ -12,7 +12,9 @@
     <div class="detail-card">
       <div class="vendor-name-row">
         <div class="vendor-name">{{ vendor.name }}</div>
+        @if (auth.isAdmin()) {
         <button class="edit-fab" (click)="openEditModal()" title="Edit Vendor">✏️</button>
+        }
       </div>
       @if (vendor.rating) {
         <div class="stars">{{ getStars(vendor.rating) }}</div>
@@ -65,7 +67,9 @@
         @if (vendor.email) {
           <a class="action-btn secondary" href="mailto:{{ vendor.email }}">✉️ Email</a>
         }
-        <button class="action-btn danger" (click)="deleteVendor()">🗑 Delete</button>
+        @if (auth.isAdmin()) {
+          <button class="action-btn danger" (click)="deleteVendor()">🗑 Delete</button>
+        }
       </div>
     </div>
   </div>

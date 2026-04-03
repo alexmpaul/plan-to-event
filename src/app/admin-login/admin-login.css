@@ -1,0 +1,201 @@
+.page {
+  display: flex;
+  height: 100vh;
+  font-family: 'poppins', sans-serif;
+  background: white;
+}
+
+/* ── LEFT IMAGE ── */
+.image-side {
+  width: 46%;
+  overflow: hidden;
+}
+
+.image-side img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0 24px 24px 0;
+}
+
+/* ── RIGHT FORM ── */
+.form-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 48px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid #ddd;
+  background: white;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  border-color: #333;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 420px;
+}
+
+.form-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+/* ── INPUTS ── */
+.input-group {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #ddd;
+  border-radius: 30px;
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.input-group:focus-within {
+  border-color: #333;
+}
+
+.input-icon {
+  margin-right: 12px;
+  font-size: 1rem;
+}
+
+.input-group input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.95rem;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+.input-group.no-icon input {
+  width: 100%;
+}
+
+.input-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.input-row input {
+  flex: 1;
+  border: 1.5px solid #ddd;
+  border-radius: 30px;
+  padding: 14px 20px;
+  font-size: 0.95rem;
+  font-family: 'Segoe UI', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+  color: #333;
+}
+
+.input-row input:focus {
+  border-color: #333;
+}
+
+.input-row input.otp {
+  flex: 0 0 80px;
+  text-align: center;
+}
+
+.input-row input.flex-grow {
+  flex: 1;
+}
+
+/* ── FORGOT ── */
+.forgot {
+  text-align: left;
+  margin-bottom: 24px;
+  padding-left: 8px;
+}
+
+.forgot a {
+  font-size: 0.85rem;
+  color: #333;
+  text-decoration: underline;
+}
+
+/* ── SUBMIT ── */
+.submit-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 30px;
+  border: none;
+  background: #1a1a1a;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Segoe UI', sans-serif;
+  transition: all 0.2s;
+  margin-bottom: 24px;
+}
+
+.submit-btn:hover {
+  background: #333;
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── SWITCH MODE ── */
+.switch-mode {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.switch-mode span {
+  color: #1a1a1a;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 4px;
+}
+
+/* ── ERROR ── */
+.error-msg {
+  background: #fff0f0;
+  color: #c0504a;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .image-side {
+    display: none;
+  }
+  .form-side {
+    padding: 32px 24px;
+  }
+}

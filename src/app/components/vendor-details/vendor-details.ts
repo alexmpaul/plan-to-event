@@ -2,7 +2,8 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Api } from '../services/api';
+import { Api } from '../../services/api';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-vendor-detail',
@@ -14,7 +15,6 @@ import { Api } from '../services/api';
 export class VendorDetails implements OnInit {
   vendor: any = null;
   category: any = null;
-
   showEditModal = false;
   editVendor: any = {};
 
@@ -22,7 +22,8 @@ export class VendorDetails implements OnInit {
     private route: ActivatedRoute,
     private api: Api,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public auth: AuthService
   ) {}
 
   ngOnInit() {

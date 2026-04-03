@@ -2,7 +2,8 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Api } from '../services/api';
+import { Api } from '../../services/api';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-vendors',
@@ -15,18 +16,19 @@ export class Vendors implements OnInit {
   vendors: any[] = [];
   category: any = null;
   catId: string = '';
-
   showModal = false;
   newVendor = {
     name: '', place: '', phone: '',
-    email: '', instaId: '', price: '', rating: 0, notes: ''
+    email: '', price: '', rating: 0,
+    notes: '', instaId: ''
   };
 
   constructor(
     private route: ActivatedRoute,
     private api: Api,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public auth: AuthService
   ) {}
 
   ngOnInit() {
@@ -58,7 +60,7 @@ export class Vendors implements OnInit {
   }
 
   openModal() {
-    this.newVendor = { name: '', place: '', phone: '', email: '', instaId: '', price: '', rating: 0, notes: '' };
+    this.newVendor = { name: '', place: '', phone: '', email: '', price: '', rating: 0, notes: '', instaId: '' };
     this.showModal = true;
     this.cdr.detectChanges();
   }

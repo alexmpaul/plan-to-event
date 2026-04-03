@@ -2,6 +2,14 @@
 <div class="hero">
   <nav class="navbar">
     <div class="logo">PlanToEvent</div>
+    <div class="nav-actions">
+      @if (isLoggedIn()) {
+        <span class="nav-user">👤 {{ userName() }}</span>
+        <button class="nav-btn outline" (click)="logout()">Logout</button>
+      } @else {
+        <button class="nav-btn" (click)="goToLogin()">Login</button>
+      }
+    </div>
   </nav>
 
   <div class="hero-content">
@@ -16,4 +24,5 @@
   </div>
 </div>
 
+<!-- CATEGORIES COMPONENT -->
 <app-categories></app-categories>

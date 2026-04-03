@@ -29,7 +29,9 @@
     </div>
   }
   <!-- FLOATING ADD BUTTON -->
-  <button class="fab" (click)="openModal()">+</button>
+  @if (auth.isAdmin()) {
+    <button class="fab" (click)="openModal()">+</button>
+  }   
 </div>
 
 <!-- ADD VENDOR MODAL -->

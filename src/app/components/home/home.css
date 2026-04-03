@@ -1,7 +1,7 @@
 /* ── HERO ── */
 .hero {
   height: 100vh;
-  background-image: url('../../assets/images/home-bg.jpg');
+  background-image: url('../../../assets/images/home-bg.jpg');
   background-size: cover;
   background-position: center;
   position: relative;
@@ -23,15 +23,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 48px;
+  padding: 20px 20px;
   background: rgba(255,255,255,0.95);
 }
 
 .logo {
   font-size: 25px;
   font-weight: 700;
-  color: #7b2d52;
-  font-family: 'Segoe UI', sans-serif;
+  color: rgba(151, 7, 71, 1);
+  font-family: 'poppins', sans-serif;
 }
 
 /* ── HERO CONTENT ── */
@@ -48,7 +48,7 @@
   background: rgba(110, 110, 110, 0.2);
   backdrop-filter: blur(4px);
   border-radius: 24px;
-  padding: 56px 64px;
+  padding: 25px 10px;
   text-align: center;
   width: 60%;
 }
@@ -58,7 +58,7 @@
   font-weight: 500;
   color: white;
   margin-bottom: 16px;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'poppins', sans-serif;
   line-height: 1.2;
 }
 
@@ -115,4 +115,43 @@
 .btn-secondary:hover {
   background: #f0f0f0;
   transform: translateY(-2px);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-btn {
+  background: #7b2d52;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: 'Segoe UI', sans-serif;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover {
+  background: #9b3d62;
+}
+
+.nav-btn.outline {
+  background: transparent;
+  border: 1.5px solid #7b2d52;
+  color: #7b2d52;
+}
+
+.nav-btn.outline:hover {
+  background: #7b2d52;
+  color: white;
+}
+
+.nav-user {
+  font-size: 0.85rem;
+  color: #2d2d2d;
 }

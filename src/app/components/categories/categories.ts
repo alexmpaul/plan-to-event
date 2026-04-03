@@ -2,14 +2,15 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Api } from '../services/api';
+import { Api } from '../../services/api';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './categories.html',
-  styleUrl: './categories.css',
+  styleUrl: './categories.css'
 })
 export class Categories implements OnInit {
   categories: any[] = [];
@@ -19,7 +20,8 @@ export class Categories implements OnInit {
   constructor(
     private api: Api,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public auth: AuthService
   ) {}
 
   ngOnInit() {
