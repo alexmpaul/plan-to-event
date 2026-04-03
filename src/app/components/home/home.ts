@@ -30,6 +30,25 @@ export class Home {
     document.getElementById('vendors-section')?.scrollIntoView({ behavior: 'smooth' });
   }
 
+  async planEvent() {
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/admin-login']);
+      return;
+    }
+
+    const events = await this.auth.getUserEvents();
+    if (events.length === 0) {
+      this.router.navigate(['/create-event']);
+    } else {
+      // Store first event as active if none selected
+      const active = sessionStorage.getItem('activeEvent');
+      if (!active) {
+        sessionStorage.setItem('activeEvent', JSON.stringify(events[0]));
+      }
+      this.router.navigate(['/vendors', events[0].id]);
+    }
+  }
+
   goToLogin() {
     this.router.navigate(['/admin-login']);
   }

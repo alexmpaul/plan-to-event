@@ -102,4 +102,12 @@ export class FirebaseService {
     const snap = await getDocs(q);
     return !snap.empty;
   }
+
+  async getUserEvents(): Promise<any[]> {
+  const uid = this.currentUser?.uid;
+  if (!uid) return [];
+  const q = query(collection(db, 'events'), where('userId', '==', uid));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
 }

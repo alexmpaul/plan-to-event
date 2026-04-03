@@ -1,37 +1,83 @@
 <div class="page">
-  <div class="header">
-    <button class="back-btn" (click)="goBack()">← Back</button>
-    <h1 class="page-title">
-      @if (category) {
-        {{ category.name }}
-      }
-    </h1>
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <button class="back-btn" (click)="goBack()">← </button>
+    <div class="logo">Plan To Event</div>
   </div>
 
-  @if (vendors.length > 0) {
-    <div class="vendors-grid">
-      @for (vendor of vendors; track vendor.id) {
-        <div class="vendor-tile" (click)="goToDetail(vendor.id)">
-          <div class="vendor-name">{{ vendor.name }}</div>
-          <div class="vendor-info">📍 {{ vendor.place }}</div>
-          <div class="vendor-info">📞 {{ vendor.phone }}</div>
-          @if (vendor.price) {
-            <div class="vendor-price">💰 {{ vendor.price }}</div>
-          }
-          <div class="vendor-arrow">→</div>
+  <!-- CATEGORY SCROLL -->
+  <div class="category-scroll">
+    @for (cat of categories; track cat.id) {
+      <div class="cat-item" [class.active]="cat.id === catId" (click)="selectCategory(cat.id)">
+        <div class="cat-circle">
+          <img [src]="'assets/icons-png/' + cat.name + '.png'" [alt]="cat.name"
+            class="cat-img" onerror="this.style.display='none'" />
         </div>
+        <div class="cat-label">{{ cat.name }}</div>
+      </div>
+    }
+  </div>
+
+  <!-- EVENT INFO BAR -->
+  @if (auth.activeEvent()) {
+    <div class="event-bar">
+      <select class="event-name-btn" (change)="switchEvent($any($event.target).selectedIndex)">
+        @for (event of auth.userEvents(); track event.id) {
+          <option [selected]="event.id === auth.activeEvent().id">{{ event.name }}</option>
+        }
+      </select>
+      @if (auth.activeEvent().location) {
+        <span class="event-meta">📍 {{ auth.activeEvent().location }}</span>
+      }
+      @if (auth.activeEvent().guests) {
+        <span class="event-meta">👥 {{ auth.activeEvent().guests }} Guests</span>
+      }
+      @if (auth.activeEvent().type) {
+        <span class="event-meta">💍 {{ auth.activeEvent().type }}</span>
       }
     </div>
-  } @else {
-    <div class="empty">
-      <div class="empty-icon">🔍</div>
-      <div class="empty-text">No vendors yet in this category</div>
-    </div>
   }
-  <!-- FLOATING ADD BUTTON -->
+  
+  <!-- VENDORS GRID -->
+  <div class="content">
+    @if (vendors.length > 0) {
+      <div class="vendors-grid">
+        @for (vendor of vendors; track vendor.id) {
+          <div class="vendor-tile">
+            <div class="vendor-info-section" (click)="goToDetail(vendor.id)">
+              <div class="vendor-name">{{ vendor.name }}</div>
+              <div class="vendor-meta">📍 {{ vendor.place }}</div>
+              <div class="vendor-meta">📞 {{ vendor.phone }}</div>
+              @if (vendor.price) {
+                <div class="vendor-price">{{ vendor.price }}</div>
+              }
+            </div>
+            <div class="vendor-footer">
+              @if (vendor.rating) {
+                <div class="vendor-rating">★ {{ vendor.rating }}</div>
+              }
+              <button
+                class="add-btn"
+                [class.added]="isAdded(vendor.id)"
+                (click)="addVendor(vendor)">
+                {{ isAdded(vendor.id) ? '✓ Added' : '+ Add' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="empty">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-text">No vendors yet in this category</div>
+      </div>
+    }
+  </div>
+
+  <!-- FAB -->
   @if (auth.isAdmin()) {
     <button class="fab" (click)="openModal()">+</button>
-  }   
+  }
 </div>
 
 <!-- ADD VENDOR MODAL -->
@@ -39,7 +85,6 @@
   <div class="modal-overlay" (click)="closeModal()">
     <div class="modal" (click)="$event.stopPropagation()">
       <h2 class="modal-title">Add Vendor</h2>
-
       <div class="form-group">
         <label>Name *</label>
         <input [(ngModel)]="newVendor.name" placeholder="Business name" />
@@ -57,12 +102,12 @@
         <input [(ngModel)]="newVendor.email" placeholder="email@example.com" />
       </div>
       <div class="form-group">
-        <label>Instagram ID</label>
-        <input [(ngModel)]="newVendor.instaId" placeholder="e.g. vendorname (without @)" />
-      </div>
-      <div class="form-group">
         <label>Pricing</label>
         <input [(ngModel)]="newVendor.price" placeholder="e.g. ₹10,000 onwards" />
+      </div>
+      <div class="form-group">
+        <label>Instagram ID</label>
+        <input [(ngModel)]="newVendor.instaId" placeholder="e.g. vendorname" />
       </div>
       <div class="form-group">
         <label>Rating (1–5)</label>
@@ -79,7 +124,6 @@
         <label>Notes</label>
         <textarea [(ngModel)]="newVendor.notes" placeholder="Any extra details..."></textarea>
       </div>
-
       <div class="modal-actions">
         <button class="btn-cancel" (click)="closeModal()">Cancel</button>
         <button class="btn-save" (click)="saveVendor()">Add Vendor</button>
