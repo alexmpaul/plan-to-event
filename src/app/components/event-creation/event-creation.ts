@@ -2,7 +2,7 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../services/auth';
+import { AuthService } from '../../services/auth';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
 @Component({
@@ -59,13 +59,10 @@ export class EventCreation {
         createdAt: new Date()
       });
 
-      // Store active event in session
-      sessionStorage.setItem('activeEvent', JSON.stringify({
-        id: docRef.id,
-        ...this.event
-      }));
+      const newEvent = { id: docRef.id, ...this.event };
+      this.auth.setActiveEvent(newEvent);
 
-      this.router.navigate(['/vendors-home']);
+      this.router.navigate(['/vendors', 'cat1']);
     } catch (e) {
       this.error = 'Failed to create event. Try again.';
     }

@@ -98,17 +98,38 @@ export class Vendors implements OnInit {
     this.cdr.detectChanges();
   }
 
+  createEvent() {
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/admin-login'], {
+        queryParams: { intent: 'new' }
+      });
+      return;
+    }
+    this.router.navigate(['/create-event']);
+  }
+
   isAdded(vendorId: string): boolean {
     return this.addedVendors.has(vendorId);
   }
 
   async addVendor(vendor: any) {
     if (!this.auth.isLoggedIn()) {
-      this.router.navigate(['/admin-login']);
+      this.router.navigate(['/admin-login'], {
+        queryParams: {
+          intent: 'add',
+          vendorUrl: encodeURIComponent(this.router.url)
+        }
+      });
       return;
     }
+    
     if (!this.auth.activeEvent()) {
-      this.router.navigate(['/create-event']);
+      const events = await this.auth.getUserEvents();
+      if (events.length === 0) {
+        this.router.navigate(['/create-event']);
+      } else {
+        this.auth.setActiveEvent(events[0]);
+      }
       return;
     }
 
@@ -116,7 +137,6 @@ export class Vendors implements OnInit {
     const uid = this.auth.currentUser()?.uid;
     const activeEvent = this.auth.activeEvent();
 
-    // If already added — remove it
     if (this.isAdded(vendor.id)) {
       const wishlistDocId = this.addedVendors.get(vendor.id)!;
       await deleteDoc(doc(db, 'wishlists', uid!, 'vendors', wishlistDocId));
@@ -125,7 +145,6 @@ export class Vendors implements OnInit {
       return;
     }
 
-    // Add to wishlist
     const docRef = await addDoc(collection(db, 'wishlists', uid!, 'vendors'), {
       vendorId: vendor.id,
       eventId: activeEvent.id,

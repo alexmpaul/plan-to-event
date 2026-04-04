@@ -2,7 +2,8 @@
   <!-- NAVBAR -->
   <div class="navbar">
     <button class="back-btn" (click)="goBack()">← </button>
-    <div class="logo">Plan To Event</div>
+    <div class="logo">Explore vendors</div>
+    <button class="create-event-btn" (click)="createEvent()">Create Event</button>
   </div>
 
   <!-- CATEGORY SCROLL -->
@@ -37,7 +38,7 @@
       }
     </div>
   }
-  
+
   <!-- VENDORS GRID -->
   <div class="content">
     @if (vendors.length > 0) {

@@ -32,25 +32,26 @@ export class Home {
 
   async planEvent() {
     if (!this.auth.isLoggedIn()) {
-      this.router.navigate(['/admin-login']);
+      this.router.navigate(['/admin-login'], {
+        queryParams: { intent: 'plan' }
+      });
       return;
     }
-
     const events = await this.auth.getUserEvents();
     if (events.length === 0) {
       this.router.navigate(['/create-event']);
     } else {
-      // Store first event as active if none selected
-      const active = sessionStorage.getItem('activeEvent');
-      if (!active) {
-        sessionStorage.setItem('activeEvent', JSON.stringify(events[0]));
+      if (!this.auth.activeEvent()) {
+        this.auth.setActiveEvent(events[0]);
       }
       this.router.navigate(['/vendors', events[0].id]);
     }
   }
 
   goToLogin() {
-    this.router.navigate(['/admin-login']);
+    this.router.navigate(['/admin-login'], {
+      queryParams: { intent: 'login' }
+    });
   }
 
   async logout() {

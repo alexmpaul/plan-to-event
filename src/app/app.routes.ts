@@ -3,8 +3,8 @@ import { Home } from './components/home/home';
 import { Vendors } from './components/vendors/vendors';
 import { VendorDetails } from './components/vendor-details/vendor-details';
 import { Categories } from './components/categories/categories';
-import { AdminLogin } from './admin-login/admin-login';
-import { EventCreation } from './event-creation/event-creation';
+import { AdminLogin } from './components/admin-login/admin-login';
+import { EventCreation } from './components/event-creation/event-creation';
 
 export const routes: Routes = [
   { path: '', component: Home },

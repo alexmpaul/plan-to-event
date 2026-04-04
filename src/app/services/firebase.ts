@@ -45,7 +45,6 @@ export class FirebaseService {
       if (user) {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         const role = userDoc.data()?.['role'];
-        console.log('user role', role)
         this.isAdmin = role === 'admin';
       } else {
         this.isAdmin = false;
