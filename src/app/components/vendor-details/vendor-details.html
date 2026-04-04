@@ -7,14 +7,25 @@
           {{ category.name }}
         </span>
       }
+      <div class="user-icon">
+        <app-navbar></app-navbar>
+      </div>
     </div>
 
     <div class="detail-card">
       <div class="vendor-name-row">
         <div class="vendor-name">{{ vendor.name }}</div>
-        @if (auth.isAdmin()) {
-        <button class="edit-fab" (click)="openEditModal()" title="Edit Vendor">✏️</button>
-        }
+        <div class="vendor-name-actions">
+          <button
+            class="add-btn"
+            [class.added]="isVendorAdded"
+            (click)="addVendor()">
+            {{ isVendorAdded ? '✓ Added' : '+ Add' }}
+          </button>
+          @if (auth.isAdmin()) {
+            <button class="edit-fab" (click)="openEditModal()" title="Edit Vendor">✏️</button>
+          }
+        </div>
       </div>
       @if (vendor.rating) {
         <div class="stars">{{ getStars(vendor.rating) }}</div>
@@ -131,4 +142,18 @@
       </div>
     </div>
   </div>
+}
+
+@if (showLoginModal) {
+  <app-login-modal
+    (closed)="showLoginModal = false"
+    (loggedIn)="onLoggedIn()">
+  </app-login-modal>
+}
+
+@if (showEventModal) {
+  <app-event-creation-modal
+    (closed)="showEventModal = false"
+    (eventCreated)="onEventCreated()">
+  </app-event-creation-modal>
 }

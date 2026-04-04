@@ -5,12 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { Api } from '../../services/api';
 import { AuthService } from '../../services/auth';
 import { FirebaseService } from '../../services/firebase';
+import { Navbar } from '../../shared/navbar/navbar';
+import { LoginModal } from '../../shared/login-modal/login-modal';
+import { EventCreationModal } from '../../shared/event-creation-modal/event-creation-modal';
 import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from 'firebase/firestore';
 
-@Component({  
+@Component({
   selector: 'app-vendors',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Navbar, LoginModal, EventCreationModal],
   templateUrl: './vendors.html',
   styleUrl: './vendors.css'
 })
@@ -19,9 +22,15 @@ export class Vendors implements OnInit {
   categories: any[] = [];
   category: any = null;
   catId: string = '';
-  addedVendors: Map<string, string> = new Map(); // vendorId -> wishlistDocId
+  addedVendors: Map<string, string> = new Map();
 
   showModal = false;
+  showLoginModal = false;
+  showEventModal = false;
+  pendingVendor: any = null;
+
+  pendingAction: 'vendor' | 'createEvent' | null = null;
+
   newVendor = {
     name: '', place: '', phone: '',
     email: '', price: '', rating: 0,
@@ -43,10 +52,8 @@ export class Vendors implements OnInit {
   }
 
   ngOnInit() {
-    // Get catId from route or session
-    this.catId = this.route.snapshot.paramMap.get('catId') || 
+    this.catId = this.route.snapshot.paramMap.get('catId') ||
                  sessionStorage.getItem('activeCatId') || '';
-    
     this.loadCategories();
   }
 
@@ -54,18 +61,12 @@ export class Vendors implements OnInit {
     this.api.getCategories().subscribe({
       next: (cats) => {
         this.categories = cats;
-
-        // Select first category by default if none selected
         if (!this.catId && cats.length > 0) {
           this.catId = cats[0].id;
         }
-
         this.category = cats.find(c => c.id === this.catId) || cats[0];
         this.catId = this.category?.id || '';
-
-        // Save to session
         sessionStorage.setItem('activeCatId', this.catId);
-
         this.loadVendors();
         this.cdr.detectChanges();
       }
@@ -98,41 +99,28 @@ export class Vendors implements OnInit {
     this.cdr.detectChanges();
   }
 
-  createEvent() {
-    if (!this.auth.isLoggedIn()) {
-      this.router.navigate(['/admin-login'], {
-        queryParams: { intent: 'new' }
-      });
-      return;
-    }
-    this.router.navigate(['/create-event']);
-  }
-
   isAdded(vendorId: string): boolean {
     return this.addedVendors.has(vendorId);
   }
 
   async addVendor(vendor: any) {
     if (!this.auth.isLoggedIn()) {
-      this.router.navigate(['/admin-login'], {
-        queryParams: {
-          intent: 'add',
-          vendorUrl: encodeURIComponent(this.router.url)
-        }
-      });
+      this.pendingAction = 'vendor';
+      this.pendingVendor = vendor;
+      this.showLoginModal = true;
+      this.cdr.detectChanges();
       return;
     }
-    
     if (!this.auth.activeEvent()) {
-      const events = await this.auth.getUserEvents();
-      if (events.length === 0) {
-        this.router.navigate(['/create-event']);
-      } else {
-        this.auth.setActiveEvent(events[0]);
-      }
+      this.pendingVendor = vendor;
+      this.showEventModal = true;
+      this.cdr.detectChanges();
       return;
     }
+    await this.doAddVendor(vendor);
+  }
 
+  async doAddVendor(vendor: any) {
     const db = getFirestore();
     const uid = this.auth.currentUser()?.uid;
     const activeEvent = this.auth.activeEvent();
@@ -141,6 +129,7 @@ export class Vendors implements OnInit {
       const wishlistDocId = this.addedVendors.get(vendor.id)!;
       await deleteDoc(doc(db, 'wishlists', uid!, 'vendors', wishlistDocId));
       this.addedVendors.delete(vendor.id);
+      this.pendingVendor = null;
       this.cdr.detectChanges();
       return;
     }
@@ -155,6 +144,47 @@ export class Vendors implements OnInit {
       price: vendor.price || ''
     });
     this.addedVendors.set(vendor.id, docRef.id);
+    this.pendingVendor = null;
+    this.cdr.detectChanges();
+  }
+
+  async onLoggedIn() {
+    this.showLoginModal = false;
+    if (this.pendingAction === 'createEvent') {
+      this.pendingAction = null;
+      this.showEventModal = true;
+      this.cdr.detectChanges();
+      return;
+    }
+    if (!this.auth.activeEvent()) {
+      const events = await this.auth.getUserEvents();
+      if (events.length === 0) {
+        this.showEventModal = true;
+      } else {
+        this.auth.setActiveEvent(events[0]);
+        if (this.pendingVendor) await this.doAddVendor(this.pendingVendor);
+      }
+    } else {
+      if (this.pendingVendor) await this.doAddVendor(this.pendingVendor);
+    }
+    this.pendingAction = null;
+    this.cdr.detectChanges();
+  }
+
+  async onEventCreated() {
+    this.showEventModal = false;
+    if (this.pendingVendor) await this.doAddVendor(this.pendingVendor);
+    this.cdr.detectChanges();
+  }
+
+  createEvent() {
+    if (!this.auth.isLoggedIn()) {
+      this.pendingAction = 'createEvent';
+      this.showLoginModal = true;
+      this.cdr.detectChanges();
+      return;
+    }
+    this.showEventModal = true;
     this.cdr.detectChanges();
   }
 

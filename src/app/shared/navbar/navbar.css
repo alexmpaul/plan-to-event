@@ -1,0 +1,137 @@
+/* ── USER ICON ── */
+.navbar-user {
+  position: relative;
+}
+
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #7b2d52;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 2px 8px rgba(123,45,82,0.3);
+}
+
+.user-avatar.guest {
+  background: #f0e0e8;
+  color: #7b2d52;
+  font-size: 1.1rem;
+}
+
+.user-avatar:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(123,45,82,0.4);
+}
+
+/* ── OVERLAY ── */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 200;
+  backdrop-filter: blur(2px);
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100vh;
+  background: white;
+  z-index: 201;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.25s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* ── SIDEBAR HEADER ── */
+.sidebar-header {
+  background: #7b2d52;
+  padding: 40px 24px 24px;
+  color: white;
+}
+
+.sidebar-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  border: 2px solid rgba(255,255,255,0.4);
+}
+
+.sidebar-username {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  margin-bottom: 4px;
+}
+
+.sidebar-email {
+  font-size: 0.78rem;
+  opacity: 0.75;
+}
+
+/* ── MENU ── */
+.sidebar-menu {
+  flex: 1;
+  padding: 16px 0;
+  overflow-y: auto;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 24px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  color: #2d2d2d;
+  font-family: 'Segoe UI', sans-serif;
+  transition: background 0.2s;
+}
+
+.menu-item:hover {
+  background: #f9f0f4;
+  color: #7b2d52;
+}
+
+.menu-icon {
+  font-size: 1.1rem;
+  width: 24px;
+  text-align: center;
+}
+
+.menu-divider {
+  border-top: 1px solid #f0e0e0;
+  margin: 8px 24px;
+}
+
+.menu-item.danger {
+  color: #c0504a;
+}
+
+.menu-item.danger:hover {
+  background: #fff0f0;
+}

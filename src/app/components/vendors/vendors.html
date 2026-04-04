@@ -3,7 +3,10 @@
   <div class="navbar">
     <button class="back-btn" (click)="goBack()">← </button>
     <div class="logo">Explore vendors</div>
-    <button class="create-event-btn" (click)="createEvent()">Create Event</button>
+    <div class="nav-actions">
+      <button class="create-event-btn" (click)="createEvent()">Create Event</button>
+      <app-navbar></app-navbar>
+  </div>
   </div>
 
   <!-- CATEGORY SCROLL -->
@@ -131,4 +134,20 @@
       </div>
     </div>
   </div>
+}
+
+<!-- LOGIN MODAL -->
+@if (showLoginModal) {
+  <app-login-modal
+    (closed)="showLoginModal = false; pendingAction = null"
+    (loggedIn)="onLoggedIn()">
+  </app-login-modal>
+}
+
+<!-- EVENT CREATION MODAL -->
+@if (showEventModal) {
+  <app-event-creation-modal
+    (closed)="showEventModal = false"
+    (eventCreated)="onEventCreated()">
+  </app-event-creation-modal>
 }

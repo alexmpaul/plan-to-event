@@ -28,16 +28,29 @@
   transition: background 0.2s;
 }
 
-.create-event-btn{
-  background: #7b2d52;
-  border: none;
-  font-size: 15px;
-  color: white;
-  cursor: pointer;
-  padding: 12px 12px;
-  border-radius: 20px;
-  transition: background 0.2s;
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-left: auto;
+}
+
+.create-event-btn {
+  background: transparent;
+  border: 1.5px solid #7b2d52;
+  color: #7b2d52;
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Segoe UI', sans-serif;
+  transition: all 0.2s;
+}
+
+.create-event-btn:hover {
+  background: #7b2d52;
+  color: white;
 }
 
 .back-btn:hover {

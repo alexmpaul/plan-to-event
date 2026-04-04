@@ -1,0 +1,47 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="close()">✕</button>
+
+    <h2 class="form-title">Hi There! Tell Us About Your Event</h2>
+
+    @if (error) {
+      <div class="error-msg">{{ error }}</div>
+    }
+
+    <div class="input-group">
+      <span class="input-icon">📋</span>
+      <input [(ngModel)]="event.name" placeholder="Event Name" />
+    </div>
+
+    <div class="input-group">
+      <span class="input-icon">💍</span>
+      <select [(ngModel)]="event.type">
+        <option value="" disabled selected>Event Type</option>
+        @for (type of eventTypes; track type) {
+          <option [value]="type">{{ type }}</option>
+        }
+      </select>
+      <span class="arrow">▾</span>
+    </div>
+
+    <div class="input-group">
+      <span class="input-icon">👥</span>
+      <input [(ngModel)]="event.guests" type="number" placeholder="No. of Guests" />
+    </div>
+
+    <div class="input-group">
+      <span class="input-icon">📍</span>
+      <select [(ngModel)]="event.location">
+        <option value="" disabled selected>Location</option>
+        @for (loc of locations; track loc) {
+          <option [value]="loc">{{ loc }}</option>
+        }
+      </select>
+      <span class="arrow">▾</span>
+    </div>
+
+    <button class="submit-btn" (click)="createEvent()" [disabled]="loading">
+      {{ loading ? 'Creating...' : 'Lets Plan' }}
+    </button>
+  </div>
+</div>

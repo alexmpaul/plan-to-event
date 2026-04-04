@@ -3,11 +3,12 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Categories } from '../categories/categories';
 import { AuthService } from '../../services/auth';
+import { Navbar } from '../../shared/navbar/navbar';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, Categories],
+  imports: [CommonModule, Categories, Navbar],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })

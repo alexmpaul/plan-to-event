@@ -4,8 +4,7 @@
     <div class="logo">PlanToEvent</div>
     <div class="nav-actions">
       @if (isLoggedIn()) {
-        <span class="nav-user">👤 {{ userName() }}</span>
-        <button class="nav-btn outline" (click)="logout()">Logout</button>
+        <app-navbar></app-navbar>
       } @else {
         <button class="nav-btn" (click)="goToLogin()">Login</button>
       }

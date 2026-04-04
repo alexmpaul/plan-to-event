@@ -4,11 +4,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../services/api';
 import { AuthService } from '../../services/auth';
+import { Navbar } from '../../shared/navbar/navbar';
+import { LoginModal } from '../../shared/login-modal/login-modal';
+import { EventCreationModal } from '../../shared/event-creation-modal/event-creation-modal';
+import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from 'firebase/firestore';
 
 @Component({
   selector: 'app-vendor-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Navbar, LoginModal, EventCreationModal],
   templateUrl: './vendor-details.html',
   styleUrl: './vendor-details.css'
 })
@@ -17,6 +21,11 @@ export class VendorDetails implements OnInit {
   category: any = null;
   showEditModal = false;
   editVendor: any = {};
+
+  showLoginModal = false;
+  showEventModal = false;
+  isVendorAdded = false;
+  wishlistDocId = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -31,6 +40,7 @@ export class VendorDetails implements OnInit {
     this.api.getVendor(id).subscribe({
       next: (data) => {
         this.vendor = data;
+        this.loadAddedState();
         this.api.getCategories().subscribe({
           next: (cats) => {
             this.category = cats.find(c => c.id === data.catId);
@@ -40,6 +50,89 @@ export class VendorDetails implements OnInit {
       },
       error: (err) => console.error('Vendor error:', err)
     });
+  }
+
+  async loadAddedState() {
+    const activeEvent = this.auth.activeEvent();
+    if (!this.auth.isLoggedIn() || !activeEvent || !this.vendor) return;
+    const db = getFirestore();
+    const uid = this.auth.currentUser()?.uid;
+    const q = query(
+      collection(db, 'wishlists', uid!, 'vendors'),
+      where('vendorId', '==', this.vendor.id),
+      where('eventId', '==', activeEvent.id)
+    );
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      this.isVendorAdded = true;
+      this.wishlistDocId = snap.docs[0].id;
+    }
+    this.cdr.detectChanges();
+  }
+
+  async addVendor() {
+    if (!this.auth.isLoggedIn()) {
+      this.showLoginModal = true;
+      this.cdr.detectChanges();
+      return;
+    }
+    if (!this.auth.activeEvent()) {
+      const events = await this.auth.getUserEvents();
+      if (events.length === 0) {
+        this.showEventModal = true;
+      } else {
+        this.auth.setActiveEvent(events[0]);
+        await this.doAddVendor();
+      }
+      this.cdr.detectChanges();
+      return;
+    }
+    await this.doAddVendor();
+  }
+
+  async doAddVendor() {
+    const db = getFirestore();
+    const uid = this.auth.currentUser()?.uid;
+    const activeEvent = this.auth.activeEvent();
+
+    if (this.isVendorAdded) {
+      await deleteDoc(doc(db, 'wishlists', uid!, 'vendors', this.wishlistDocId));
+      this.isVendorAdded = false;
+      this.wishlistDocId = '';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const docRef = await addDoc(collection(db, 'wishlists', uid!, 'vendors'), {
+      vendorId: this.vendor.id,
+      eventId: activeEvent.id,
+      name: this.vendor.name,
+      place: this.vendor.place,
+      phone: this.vendor.phone,
+      catId: this.vendor.catId,
+      price: this.vendor.price || ''
+    });
+    this.isVendorAdded = true;
+    this.wishlistDocId = docRef.id;
+    this.cdr.detectChanges();
+  }
+
+  async onLoggedIn() {
+    this.showLoginModal = false;
+    const events = await this.auth.getUserEvents();
+    if (events.length === 0) {
+      this.showEventModal = true;
+    } else {
+      this.auth.setActiveEvent(events[0]);
+      await this.doAddVendor();
+    }
+    this.cdr.detectChanges();
+  }
+
+  async onEventCreated() {
+    this.showEventModal = false;
+    await this.doAddVendor();
+    this.cdr.detectChanges();
   }
 
   goBack() {
