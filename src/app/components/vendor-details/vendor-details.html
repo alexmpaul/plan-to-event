@@ -1,93 +1,157 @@
 @if (vendor) {
-  <div class="page">
-    <div class="header">
-      <button class="back-btn" (click)="goBack()">← Back</button>
-      @if (category) {
-        <span class="category-badge">
-          {{ category.name }}
-        </span>
-      }
-      <div class="user-icon">
-        <app-navbar></app-navbar>
-      </div>
-    </div>
+<div class="page">
 
-    <div class="detail-card">
-      <div class="vendor-name-row">
-        <div class="vendor-name">{{ vendor.name }}</div>
-        <div class="vendor-name-actions">
-          <button
-            class="add-btn"
-            [class.added]="isVendorAdded"
-            (click)="addVendor()">
-            {{ isVendorAdded ? '✓ Added' : '+ Add' }}
-          </button>
-          @if (auth.isAdmin()) {
-            <button class="edit-fab" (click)="openEditModal()" title="Edit Vendor">✏️</button>
+  <!-- NAVBAR -->
+  <div class="top-navbar">
+    <div class="top-logo">Plan To Event</div>
+    <div class="top-right">
+      <app-navbar></app-navbar>
+    </div>
+  </div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <button class="back-btn" (click)="goBack()">←</button>
+    <span class="cat-label">{{ category?.name }}</span>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="detail-layout">
+
+    <!-- LEFT SIDE -->
+    <div class="left-side">
+
+      <!-- PHOTO SLIDESHOW -->
+      <div class="photo-slider">
+        @if (vendor.photos && vendor.photos.length > 0) {
+          <img [src]="vendor.photos[activePhoto]" [alt]="vendor.name" class="main-photo" />
+          @if (vendor.photos.length > 1) {
+            <button class="slide-btn prev" (click)="prevPhoto()">‹</button>
+            <button class="slide-btn next" (click)="nextPhoto()">›</button>
+            <div class="photo-dots">
+              @for (p of vendor.photos; track $index) {
+                <span class="dot" [class.active]="$index === activePhoto" (click)="activePhoto = $index"></span>
+              }
+            </div>
+          }
+        } @else {
+          <div class="no-photo">📷 No photos added</div>
+        }
+      </div>
+
+      <!-- VENDOR INFO -->
+      <div class="vendor-info-section">
+        <div class="vendor-name-row">
+          <h1 class="vendor-name">{{ vendor.name }}</h1>
+          <div class="vendor-rating">
+            @if (vendor.rating) {
+              <span class="star">★</span>
+              <span>{{ vendor.rating }}.0</span>
+            }
+          </div>
+        </div>
+
+        <div class="vendor-meta-row">
+          @if (vendor.place) {
+            <span class="meta-item">📍 {{ vendor.place }}</span>
+          }
+          @if (vendor.instaId) {
+            <span class="meta-item">📸 {{ vendor.instaId }}</span>
           }
         </div>
-      </div>
-      @if (vendor.rating) {
-        <div class="stars">{{ getStars(vendor.rating) }}</div>
-      }
 
-      <hr class="divider">
-
-      <div class="info-row">
-        <span class="info-label">📍 Location</span>
-        <span class="info-value">{{ vendor.place }}</span>
-      </div>
-
-      <div class="info-row">
-        <span class="info-label">📞 Phone</span>
-        <a class="info-value link" href="tel:{{ vendor.phone }}">{{ vendor.phone }}</a>
-      </div>
-
-      @if (vendor.instaId) {
-        <div class="info-row">
-          <span class="info-label">📸 Instagram</span>
-          <a class="info-value link" href="https://instagram.com/{{ vendor.instaId }}" target="_blank">@{{ vendor.instaId }}</a>
+        <div class="share-row">
+          <button class="share-btn">⤢ Share</button>
         </div>
-      }
 
-      @if (vendor.email) {
-        <div class="info-row">
-          <span class="info-label">✉️ Email</span>
-          <a class="info-value link" href="mailto:{{ vendor.email }}">{{ vendor.email }}</a>
-        </div>
-      }
-
-      @if (vendor.price) {
-        <div class="info-row">
-          <span class="info-label">💰 Pricing</span>
-          <span class="info-value">{{ vendor.price }}</span>
-        </div>
-      }
-
-      @if (vendor.notes) {
-        <div class="notes-box">
-          <div class="notes-label">Notes</div>
-          <div class="notes-text">{{ vendor.notes }}</div>
-        </div>
-      }
-
-      <hr class="divider">
-
-      <div class="action-row">
-        <a class="action-btn primary" href="tel:{{ vendor.phone }}">📞 Call</a>
-        @if (vendor.email) {
-          <a class="action-btn secondary" href="mailto:{{ vendor.email }}">✉️ Email</a>
-        }
-        @if (auth.isAdmin()) {
-          <button class="action-btn danger" (click)="deleteVendor()">🗑 Delete</button>
+        @if (vendor.notes) {
+          <div class="section-block">
+            <h3 class="section-heading">Description</h3>
+            <p class="section-text">{{ vendor.notes }}</p>
+          </div>
         }
       </div>
     </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right-side">
+
+      <!-- PRICE CARD -->
+      @if (vendor.price) {
+        <div class="price-card">
+          <div class="price-label">Price</div>
+          <div class="price-value">{{ vendor.price }}</div>
+        </div>
+      }
+
+      <!-- SECTIONS -->
+      <div class="info-sections">
+        <div class="info-section-item" (click)="toggleSection('gallery')">
+          <span>Gallery</span>
+          <span class="chevron">›</span>
+        </div>
+        @if (activeSection === 'gallery' && vendor.photos?.length > 0) {
+          <div class="gallery-grid">
+            @for (p of vendor.photos; track $index) {
+              <img [src]="p" [alt]="vendor.name" class="gallery-thumb" (click)="activePhoto = $index" />
+            }
+          </div>
+        }
+
+        <div class="info-section-item" (click)="toggleSection('contact')">
+          <span>Contact Details</span>
+          <span class="chevron">›</span>
+        </div>
+        @if (activeSection === 'contact') {
+          <div class="contact-info">
+            <div class="contact-row">📞 <a href="tel:{{ vendor.phone }}">{{ vendor.phone }}</a></div>
+            @if (vendor.email) {
+              <div class="contact-row">✉️ <a href="mailto:{{ vendor.email }}">{{ vendor.email }}</a></div>
+            }
+            @if (vendor.instaId) {
+              <div class="contact-row">📸 <a href="https://instagram.com/{{ vendor.instaId }}" target="_blank">@{{ vendor.instaId }}</a></div>
+            }
+          </div>
+        }
+
+        <div class="info-section-item" (click)="toggleSection('more')">
+          <span>More Info</span>
+          <span class="chevron">›</span>
+        </div>
+        @if (activeSection === 'more') {
+          <div class="more-info">
+            @if (vendor.email) {
+              <div class="info-row-item"><span class="info-lbl">Email</span><span>{{ vendor.email }}</span></div>
+            }
+            <div class="info-row-item"><span class="info-lbl">Location</span><span>{{ vendor.place }}</span></div>
+          </div>
+        }
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="action-buttons">
+        <button
+          class="add-btn"
+          [class.added]="isVendorAdded"
+          (click)="addVendor()">
+          {{ isVendorAdded ? '✓ Added' : 'Add' }}
+        </button>
+        <button class="view-list-btn" (click)="goToDashboard()">View List</button>
+      </div>
+
+      <!-- ADMIN ACTIONS -->
+      @if (auth.isAdmin()) {
+        <div class="admin-actions">
+          <button class="edit-btn" (click)="openEditModal()">✏️ Edit</button>
+          <button class="delete-btn" (click)="deleteVendor()">🗑 Delete</button>
+        </div>
+      }
+    </div>
   </div>
+</div>
+
 } @else {
-  <div class="loading">
-    <p>Loading...</p>
-  </div>
+  <div class="loading"><p>Loading...</p></div>
 }
 
 <!-- EDIT MODAL -->
@@ -95,7 +159,6 @@
   <div class="modal-overlay" (click)="closeEditModal()">
     <div class="modal" (click)="$event.stopPropagation()">
       <h2 class="modal-title">Edit Vendor</h2>
-
       <div class="form-group">
         <label>Name *</label>
         <input [(ngModel)]="editVendor.name" placeholder="Business name" />
@@ -113,12 +176,12 @@
         <input [(ngModel)]="editVendor.email" placeholder="email@example.com" />
       </div>
       <div class="form-group">
-        <label>Instagram ID</label>
-        <input [(ngModel)]="editVendor.instaId" placeholder="e.g. vendorname (without @)" />
-      </div>
-      <div class="form-group">
         <label>Pricing</label>
         <input [(ngModel)]="editVendor.price" placeholder="e.g. ₹10,000 onwards" />
+      </div>
+      <div class="form-group">
+        <label>Instagram ID</label>
+        <input [(ngModel)]="editVendor.instaId" placeholder="vendorname" />
       </div>
       <div class="form-group">
         <label>Rating (1–5)</label>
@@ -135,7 +198,10 @@
         <label>Notes</label>
         <textarea [(ngModel)]="editVendor.notes" placeholder="Any extra details..."></textarea>
       </div>
-
+      <div class="form-group">
+        <label>Photo URLs (one per line, max 5)</label>
+        <textarea [(ngModel)]="editPhotosText" placeholder="https://example.com/photo1.jpg&#10;https://example.com/photo2.jpg" rows="5"></textarea>
+      </div>
       <div class="modal-actions">
         <button class="btn-cancel" (click)="closeEditModal()">Cancel</button>
         <button class="btn-save" (click)="saveEdit()">Save Changes</button>
@@ -144,6 +210,7 @@
   </div>
 }
 
+<!-- LOGIN MODAL -->
 @if (showLoginModal) {
   <app-login-modal
     (closed)="showLoginModal = false"
@@ -151,6 +218,7 @@
   </app-login-modal>
 }
 
+<!-- EVENT CREATION MODAL -->
 @if (showEventModal) {
   <app-event-creation-modal
     (closed)="showEventModal = false"

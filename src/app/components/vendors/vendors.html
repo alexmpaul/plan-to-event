@@ -94,6 +94,10 @@
         <input [(ngModel)]="newVendor.name" placeholder="Business name" />
       </div>
       <div class="form-group">
+        <label>Photo URLs (one per line, max 5)</label>
+        <textarea [(ngModel)]="newVendor.photosText" placeholder="https://example.com/photo1.jpg&#10;https://example.com/photo2.jpg" rows="4"></textarea>
+      </div>
+      <div class="form-group">
         <label>Place *</label>
         <input [(ngModel)]="newVendor.place" placeholder="City / Area" />
       </div>
