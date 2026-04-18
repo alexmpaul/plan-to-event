@@ -34,7 +34,7 @@ export class Vendors implements OnInit {
   newVendor = {
     name: '', place: '', phone: '',
     email: '', price: '', rating: 0,
-    notes: '', instaId: ''
+    notes: '', instaId: '', photosText: ''
   };
 
   constructor(
@@ -213,7 +213,7 @@ export class Vendors implements OnInit {
   }
 
   openModal() {
-    this.newVendor = { name: '', place: '', phone: '', email: '', price: '', rating: 0, notes: '', instaId: '' };
+    this.newVendor = { name: '', place: '', phone: '', email: '', price: '', rating: 0, notes: '', instaId: '', photosText: '' };
     this.showModal = true;
     this.cdr.detectChanges();
   }
@@ -228,7 +228,13 @@ export class Vendors implements OnInit {
       alert('Name, place and phone are required!');
       return;
     }
-    const vendor = { ...this.newVendor, catId: this.catId };
+    const photos = (this.newVendor.photosText || '')
+      .split('\n')
+      .map((p: string) => p.trim())
+      .filter((p: string) => p.length > 0)
+      .slice(0, 5);
+
+    const vendor = { ...this.newVendor, catId: this.catId, photos };
     this.api.addVendor(vendor).subscribe({
       next: () => {
         this.closeModal();

@@ -21,11 +21,15 @@ export class VendorDetails implements OnInit {
   category: any = null;
   showEditModal = false;
   editVendor: any = {};
+  editPhotosText = '';
 
   showLoginModal = false;
   showEventModal = false;
   isVendorAdded = false;
   wishlistDocId = '';
+
+  activePhoto = 0;
+  activeSection = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -50,6 +54,21 @@ export class VendorDetails implements OnInit {
       },
       error: (err) => console.error('Vendor error:', err)
     });
+  }
+
+  toggleSection(section: string) {
+    this.activeSection = this.activeSection === section ? '' : section;
+    this.cdr.detectChanges();
+  }
+
+  prevPhoto() {
+    this.activePhoto = (this.activePhoto - 1 + this.vendor.photos.length) % this.vendor.photos.length;
+    this.cdr.detectChanges();
+  }
+
+  nextPhoto() {
+    this.activePhoto = (this.activePhoto + 1) % this.vendor.photos.length;
+    this.cdr.detectChanges();
   }
 
   async loadAddedState() {
@@ -141,6 +160,10 @@ export class VendorDetails implements OnInit {
     }
   }
 
+  goToDashboard() {
+    this.router.navigate(['/dashboard']);
+  }
+
   deleteVendor() {
     if (confirm('Delete this vendor?')) {
       this.api.deleteVendor(this.vendor.id).subscribe(() => {
@@ -151,6 +174,7 @@ export class VendorDetails implements OnInit {
 
   openEditModal() {
     this.editVendor = { ...this.vendor };
+    this.editPhotosText = (this.vendor.photos || []).join('\n');
     this.showEditModal = true;
     this.cdr.detectChanges();
   }
@@ -165,9 +189,16 @@ export class VendorDetails implements OnInit {
       alert('Name, place and phone are required!');
       return;
     }
-    this.api.updateVendor(this.vendor.id, this.editVendor).subscribe({
+    const photos = this.editPhotosText
+      .split('\n')
+      .map(p => p.trim())
+      .filter(p => p.length > 0)
+      .slice(0, 5);
+
+    this.api.updateVendor(this.vendor.id, { ...this.editVendor, photos }).subscribe({
       next: (updated) => {
         this.vendor = updated;
+        this.activePhoto = 0;
         this.closeEditModal();
         this.cdr.detectChanges();
       },
