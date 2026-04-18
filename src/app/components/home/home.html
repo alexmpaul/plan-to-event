@@ -1,28 +1,41 @@
-<!-- HERO SECTION -->
 <div class="hero">
-  <img src="../../../assets/images/landing-bg.jpg" class="hero-img" />
+
+  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="logo">PlanToEvent</div>
+
     <div class="nav-actions">
-      @if (isLoggedIn()) {
-        <app-navbar></app-navbar>
-      } @else {
-        <button class="nav-btn" (click)="goToLogin()">Login</button>
-      }
+      <button class="nav-btn outline" (click)="goToLogin()">Login</button>
     </div>
   </nav>
 
-  <div class="hero-content">
-    <div class="hero-card">
-      <h1 class="hero-title">Lets make the <span>EVENT</span> happen</h1>
-      <p class="hero-sub">Create Event, add vendors, compare, track budgets, manage guests and many more – all in one place.</p>
-      <div class="hero-btns">
-        <button class="btn-primary" (click)="planEvent()">Plan your Event</button>
-        <button class="btn-secondary">Learn More</button>
+  <div class="content">
+
+    <div class="hero-wrapper">
+
+      <!-- TEXT -->
+      <div class="text-section">
+        <div class="heading">
+          Plan <span class="subheading"> your </span> Event <br />
+          <span class="subheading">effortlessly</span>
+        </div>
+
+        <p>
+          Find and manage event vendors with ease. <br />
+          Make planning your special day simple and stress-free.
+        </p>
+
+        <button class="cta-btn" (click)="planEvent()">Lets Plan</button>
       </div>
+
+      <!-- IMAGE -->
+      <div class="image-section">
+        <img src="../../../assets/images/landing-img-icons.jpg" />
+      </div>
+
     </div>
+
   </div>
 </div>
 
-<!-- CATEGORIES COMPONENT -->
 <app-categories></app-categories>
