@@ -1,42 +1,29 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const { google } = require('googleapis');
+const admin = require('firebase-admin');
 const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const SPREADSHEET_ID = '1V0WYlZ7N6f90boqeYiibYekLwQrc1eUrThCDPdVdsr8';
+// ── FIREBASE ADMIN INIT ──
+const credentials = process.env.FIREBASE_CREDENTIALS
+  ? JSON.parse(process.env.FIREBASE_CREDENTIALS)
+  : require('./firebase-credentials.json');
 
-// Load credentials from the JSON file you downloaded
-const credentials = process.env.GOOGLE_CREDENTIALS 
-  ? JSON.parse(process.env.GOOGLE_CREDENTIALS)
-  : require('./credentials.json');
-
-const auth = new google.auth.GoogleAuth({
-  credentials,
-  scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+admin.initializeApp({
+  credential: admin.credential.cert(credentials)
 });
 
-async function getSheets() {
-  const client = await auth.getClient();
-  return google.sheets({ version: 'v4', auth: client });
-}
+const db = admin.firestore();
 
 // ── CATEGORIES ──
 app.get('/api/categories', async (req, res) => {
   try {
-    const sheets = await getSheets();
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: 'categories!A2:C',
-    });
-    const rows = response.data.values || [];
-    const categories = rows.map(row => ({
-      id: row[0], name: row[1], icon: row[2]
-    }));
+    const snap = await db.collection('categories').orderBy('order').get();
+    const categories = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     res.json(categories);
   } catch (err) {
     console.error(err);
@@ -47,18 +34,33 @@ app.get('/api/categories', async (req, res) => {
 app.post('/api/categories', async (req, res) => {
   try {
     const { name, icon } = req.body;
-    const id = 'cat_' + Date.now();
-    const sheets = await getSheets();
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: 'categories!A:C',
-      valueInputOption: 'RAW',
-      resource: { values: [[id, name, icon]] },
-    });
-    res.json({ id, name, icon });
+    const snap = await db.collection('categories').get();
+    const order = snap.size;
+    const ref = await db.collection('categories').add({ name, icon, order });
+    res.json({ id: ref.id, name, icon, order });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to add category' });
+  }
+});
+
+app.put('/api/categories/:id', async (req, res) => {
+  try {
+    await db.collection('categories').doc(req.params.id).update(req.body);
+    res.json({ id: req.params.id, ...req.body });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update category' });
+  }
+});
+
+app.delete('/api/categories/:id', async (req, res) => {
+  try {
+    await db.collection('categories').doc(req.params.id).delete();
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete category' });
   }
 });
 
@@ -66,19 +68,10 @@ app.post('/api/categories', async (req, res) => {
 app.get('/api/vendors', async (req, res) => {
   try {
     const { catId } = req.query;
-    const sheets = await getSheets();
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: 'vendors!A2:J',
-    });
-    const rows = response.data.values || [];
-    let vendors = rows.map(row => ({
-      id: row[0], catId: row[1], name: row[2],
-      place: row[3], phone: row[4], email: row[5],
-      price: row[6], rating: parseInt(row[7]) || 0,
-      notes: row[8], instaId: row[9]
-    }));
-    if (catId) vendors = vendors.filter(v => v.catId === catId);
+    let query = db.collection('vendors');
+    if (catId) query = query.where('catId', '==', catId);
+    const snap = await query.get();
+    const vendors = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     res.json(vendors);
   } catch (err) {
     console.error(err);
@@ -88,20 +81,9 @@ app.get('/api/vendors', async (req, res) => {
 
 app.get('/api/vendors/:id', async (req, res) => {
   try {
-    const sheets = await getSheets();
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: 'vendors!A2:J',
-    });
-    const rows = response.data.values || [];
-    const row = rows.find(r => r[0] === req.params.id);
-    if (!row) return res.status(404).json({ error: 'Not found' });
-    res.json({
-      id: row[0], catId: row[1], name: row[2],
-      place: row[3], phone: row[4], email: row[5],
-      price: row[6], rating: parseInt(row[7]) || 0,
-      notes: row[8], instaId: row[9]
-    });
+    const doc = await db.collection('vendors').doc(req.params.id).get();
+    if (!doc.exists) return res.status(404).json({ error: 'Not found' });
+    res.json({ id: doc.id, ...doc.data() });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch vendor' });
@@ -110,16 +92,21 @@ app.get('/api/vendors/:id', async (req, res) => {
 
 app.post('/api/vendors', async (req, res) => {
   try {
-    const { catId, name, place, phone, email, price, rating, notes, instaId } = req.body;
-    const id = 'v_' + Date.now();
-    const sheets = await getSheets();
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: 'vendors!A:J',
-      valueInputOption: 'RAW',
-      resource: { values: [[id, catId, name, place, phone, email || '', price || '', rating || 0, notes || '', instaId || '']] },
-    });
-    res.json({ id, catId, name, place, phone, email, price, rating, notes, instaId });
+    const vendorData = {
+      catId: req.body.catId,
+      name: req.body.name,
+      place: req.body.place,
+      phone: req.body.phone,
+      email: req.body.email || '',
+      price: req.body.price || '',
+      rating: parseInt(req.body.rating) || 0,
+      notes: req.body.notes || '',
+      instaId: req.body.instaId || '',
+      photos: req.body.photos || [],
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    };
+    const ref = await db.collection('vendors').add(vendorData);
+    res.json({ id: ref.id, ...vendorData });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to add vendor' });
@@ -128,25 +115,20 @@ app.post('/api/vendors', async (req, res) => {
 
 app.put('/api/vendors/:id', async (req, res) => {
   try {
-    const sheets = await getSheets();
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: 'vendors!A2:J',
-    });
-    const rows = response.data.values || [];
-    const rowIndex = rows.findIndex(r => r[0] === req.params.id);
-    if (rowIndex === -1) return res.status(404).json({ error: 'Not found' });
-
-    const { catId, name, place, phone, email, price, rating, notes, instaId } = req.body;
-    const sheetRow = rowIndex + 2;
-
-    await sheets.spreadsheets.values.update({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `vendors!A${sheetRow}:J${sheetRow}`,
-      valueInputOption: 'RAW',
-      resource: { values: [[req.params.id, catId, name, place, phone, email || '', price || '', rating || 0, notes || '', instaId || '']] },
-    });
-    res.json({ id: req.params.id, ...req.body });
+    const vendorData = {
+      catId: req.body.catId,
+      name: req.body.name,
+      place: req.body.place,
+      phone: req.body.phone,
+      email: req.body.email || '',
+      price: req.body.price || '',
+      rating: parseInt(req.body.rating) || 0,
+      notes: req.body.notes || '',
+      instaId: req.body.instaId || '',
+      photos: req.body.photos || [],
+    };
+    await db.collection('vendors').doc(req.params.id).update(vendorData);
+    res.json({ id: req.params.id, ...vendorData });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to update vendor' });
@@ -155,20 +137,7 @@ app.put('/api/vendors/:id', async (req, res) => {
 
 app.delete('/api/vendors/:id', async (req, res) => {
   try {
-    const sheets = await getSheets();
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: 'vendors!A2:J',
-    });
-    const rows = response.data.values || [];
-    const rowIndex = rows.findIndex(r => r[0] === req.params.id);
-    if (rowIndex === -1) return res.status(404).json({ error: 'Not found' });
-
-    const sheetRow = rowIndex + 2;
-    await sheets.spreadsheets.values.clear({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `vendors!A${sheetRow}:J${sheetRow}`,
-    });
+    await db.collection('vendors').doc(req.params.id).delete();
     res.json({ success: true });
   } catch (err) {
     console.error(err);
