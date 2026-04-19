@@ -202,6 +202,24 @@
   line-height: 1.7;
 }
 
+.quill-editor {
+  min-height: 150px;
+  border-radius: 10px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 0.9rem;
+}
+
+.ql-toolbar {
+  border-radius: 10px 10px 0 0 !important;
+  border-color: #f0e0e0 !important;
+}
+
+.ql-container {
+  border-radius: 0 0 10px 10px !important;
+  border-color: #f0e0e0 !important;
+  font-family: 'Segoe UI', sans-serif !important;
+}
+
 .photo-upload-area {
   display: flex;
   gap: 10px;
