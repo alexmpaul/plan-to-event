@@ -73,13 +73,15 @@
             }
           </div>
           @if (editingDescription) {
-            <textarea class="inline-textarea" [(ngModel)]="tempDescription" placeholder="Add description..."></textarea>
-            <div class="inline-actions">
-              <button class="inline-save" (click)="saveDescription()">Save</button>
-              <button class="inline-cancel" (click)="editingDescription = false">Cancel</button>
+            <div class="quill-wrapper">
+              <div id="description-editor" class="quill-editor"></div>
+              <div class="inline-actions">
+                <button class="inline-save" (click)="saveDescription()">Save</button>
+                <button class="inline-cancel" (click)="cancelDescription()">Cancel</button>
+              </div>
             </div>
           } @else {
-            <p class="section-text">{{ vendor.description || 'No description added yet.' }}</p>
+            <div class="section-text ql-editor" [innerHTML]="vendor.description || 'No description added yet.'"></div>
           }
         </div>
 
@@ -92,13 +94,15 @@
             }
           </div>
           @if (editingInclusions) {
-            <textarea class="inline-textarea" [(ngModel)]="tempInclusions" placeholder="Add inclusions..."></textarea>
-            <div class="inline-actions">
-              <button class="inline-save" (click)="saveInclusions()">Save</button>
-              <button class="inline-cancel" (click)="editingInclusions = false">Cancel</button>
+            <div class="quill-wrapper">
+              <div id="inclusions-editor" class="quill-editor"></div>
+              <div class="inline-actions">
+                <button class="inline-save" (click)="saveInclusions()">Save</button>
+                <button class="inline-cancel" (click)="cancelInclusions()">Cancel</button>
+              </div>
             </div>
           } @else {
-            <p class="section-text">{{ vendor.inclusions || 'No inclusions added yet.' }}</p>
+            <div class="section-text ql-editor" [innerHTML]="vendor.inclusions || 'No inclusions added yet.'"></div>
           }
         </div>
 

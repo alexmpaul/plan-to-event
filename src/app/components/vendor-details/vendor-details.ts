@@ -8,6 +8,7 @@ import { Navbar } from '../../shared/navbar/navbar';
 import { LoginModal } from '../../shared/login-modal/login-modal';
 import { EventCreationModal } from '../../shared/event-creation-modal/event-creation-modal';
 import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from 'firebase/firestore';
+import Quill from 'quill';
 
 @Component({
   selector: 'app-vendor-detail',
@@ -39,6 +40,9 @@ export class VendorDetails implements OnInit {
   editingInclusions = false;
   tempDescription = '';
   tempInclusions = '';
+
+  descriptionEditor: any = null;
+  inclusionsEditor: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -269,38 +273,93 @@ export class VendorDetails implements OnInit {
     this.tempDescription = this.vendor.description || '';
     this.editingDescription = true;
     this.cdr.detectChanges();
+    setTimeout(() => {
+      this.descriptionEditor = new Quill('#description-editor', {
+        theme: 'snow',
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'align': [] }],
+            ['clean']
+          ]
+        }
+      });
+      if (this.tempDescription) {
+        this.descriptionEditor.root.innerHTML = this.tempDescription;
+      }
+    }, 100);
   }
 
-  async saveDescription() {
-    this.api.updateVendor(this.vendor.id, { 
-      ...this.vendor, 
-      description: this.tempDescription 
+  saveDescription() {
+    const content = this.descriptionEditor?.root.innerHTML || '';
+    this.api.updateVendor(this.vendor.id, {
+      ...this.vendor,
+      description: content
     }).subscribe({
       next: (updated) => {
-        this.vendor = updated;
+        this.vendor = { ...updated };
+        this.descriptionEditor = null;
         this.editingDescription = false;
         this.cdr.detectChanges();
       }
     });
   }
 
+  cancelDescription() {
+    this.descriptionEditor = null;
+    this.editingDescription = false;
+    this.cdr.detectChanges();
+  }
+
   startEditInclusions() {
     this.tempInclusions = this.vendor.inclusions || '';
     this.editingInclusions = true;
     this.cdr.detectChanges();
+    setTimeout(() => {
+      this.inclusionsEditor = new Quill('#inclusions-editor', {
+        theme: 'snow',
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'align': [] }],
+            ['clean']
+          ]
+        }
+      });
+      if (this.tempInclusions) {
+        this.inclusionsEditor.root.innerHTML = this.tempInclusions;
+      }
+    }, 100);
   }
 
-  async saveInclusions() {
-    this.api.updateVendor(this.vendor.id, { 
-      ...this.vendor, 
-      inclusions: this.tempInclusions 
+  saveInclusions() {
+    const content = this.inclusionsEditor?.root.innerHTML || '';
+    this.api.updateVendor(this.vendor.id, {
+      ...this.vendor,
+      inclusions: content
     }).subscribe({
       next: (updated) => {
-        this.vendor = updated;
+        this.vendor = { ...updated };
+        this.inclusionsEditor = null;
         this.editingInclusions = false;
         this.cdr.detectChanges();
       }
     });
+  }
+
+  cancelInclusions() {
+    this.inclusionsEditor = null;
+    this.editingInclusions = false;
+    this.cdr.detectChanges();
+  }
+
+  destroyEditor(editorId: string) {
+    const container = document.getElementById(editorId);
+    if (container) {
+      container.innerHTML = '';
+    }
   }
 
   getStars(rating: number): string {
