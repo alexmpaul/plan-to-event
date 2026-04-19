@@ -37,6 +37,10 @@ export class Vendors implements OnInit {
     notes: '', instaId: '', photosText: ''
   };
 
+  selectedPhotos: File[] = [];
+  photoPreviewUrls: string[] = [];
+  uploadingPhotos = false;
+
   constructor(
     private route: ActivatedRoute,
     private api: Api,
@@ -212,8 +216,71 @@ export class Vendors implements OnInit {
     this.router.navigate(['/']);
   }
 
+  onPhotosSelected(event: any) {
+    const files: FileList = event.target.files;
+    const maxSize = 2 * 1024 * 1024; // 2MB
+
+    for (let i = 0; i < files.length; i++) {
+      if (this.selectedPhotos.length >= 3) {
+        alert('Maximum 3 photos allowed');
+        break;
+      }
+      if (files[i].size > maxSize) {
+        alert(`${files[i].name} exceeds 2MB limit`);
+        continue;
+      }
+      this.selectedPhotos.push(files[i]);
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.photoPreviewUrls.push(e.target.result);
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(files[i]);
+    }
+    this.cdr.detectChanges();
+  }
+
+  removePhoto(index: number) {
+    this.selectedPhotos.splice(index, 1);
+    this.photoPreviewUrls.splice(index, 1);
+    this.cdr.detectChanges();
+  }
+
+  async saveVendor() {
+    if (!this.newVendor.name || !this.newVendor.place || !this.newVendor.phone) {
+      alert('Name, place and phone are required!');
+      return;
+    }
+
+    this.uploadingPhotos = true;
+    let photoUrls: string[] = [];
+
+    if (this.selectedPhotos.length > 0) {
+      try {
+        const response = await this.api.uploadPhotos(this.selectedPhotos).toPromise();
+        photoUrls = response?.urls || [];
+      } catch (e) {
+        alert('Failed to upload photos. Please try again.');
+        this.uploadingPhotos = false;
+        return;
+      }
+    }
+
+    const vendor = { ...this.newVendor, catId: this.catId, photos: photoUrls };
+    this.api.addVendor(vendor).subscribe({
+      next: () => {
+        this.closeModal();
+        this.loadVendors();
+        this.uploadingPhotos = false;
+      },
+      error: () => { this.uploadingPhotos = false; }
+    });
+  }
+
   openModal() {
     this.newVendor = { name: '', place: '', phone: '', email: '', price: '', rating: 0, notes: '', instaId: '', photosText: '' };
+    this.selectedPhotos = [];
+    this.photoPreviewUrls = [];
     this.showModal = true;
     this.cdr.detectChanges();
   }
@@ -223,23 +290,4 @@ export class Vendors implements OnInit {
     this.cdr.detectChanges();
   }
 
-  saveVendor() {
-    if (!this.newVendor.name || !this.newVendor.place || !this.newVendor.phone) {
-      alert('Name, place and phone are required!');
-      return;
-    }
-    const photos = (this.newVendor.photosText || '')
-      .split('\n')
-      .map((p: string) => p.trim())
-      .filter((p: string) => p.length > 0)
-      .slice(0, 5);
-
-    const vendor = { ...this.newVendor, catId: this.catId, photos };
-    this.api.addVendor(vendor).subscribe({
-      next: () => {
-        this.closeModal();
-        this.loadVendors();
-      }
-    });
-  }
 }

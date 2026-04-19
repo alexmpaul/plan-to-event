@@ -46,3 +46,4 @@ node_modules/
 server/node_modules/
 server/firebase-credentials.json
 server/credentials.json
+server/.env

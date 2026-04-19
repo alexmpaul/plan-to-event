@@ -64,9 +64,47 @@
           <button class="share-btn">⤢ Share</button>
         </div>
 
+        <!-- DESCRIPTION -->
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h3 class="section-heading">Description</h3>
+            @if (auth.isAdmin() && !editingDescription) {
+              <button class="inline-edit-btn" (click)="startEditDescription()">✏️</button>
+            }
+          </div>
+          @if (editingDescription) {
+            <textarea class="inline-textarea" [(ngModel)]="tempDescription" placeholder="Add description..."></textarea>
+            <div class="inline-actions">
+              <button class="inline-save" (click)="saveDescription()">Save</button>
+              <button class="inline-cancel" (click)="editingDescription = false">Cancel</button>
+            </div>
+          } @else {
+            <p class="section-text">{{ vendor.description || 'No description added yet.' }}</p>
+          }
+        </div>
+
+        <!-- INCLUSIONS -->
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h3 class="section-heading">Inclusions</h3>
+            @if (auth.isAdmin() && !editingInclusions) {
+              <button class="inline-edit-btn" (click)="startEditInclusions()">✏️</button>
+            }
+          </div>
+          @if (editingInclusions) {
+            <textarea class="inline-textarea" [(ngModel)]="tempInclusions" placeholder="Add inclusions..."></textarea>
+            <div class="inline-actions">
+              <button class="inline-save" (click)="saveInclusions()">Save</button>
+              <button class="inline-cancel" (click)="editingInclusions = false">Cancel</button>
+            </div>
+          } @else {
+            <p class="section-text">{{ vendor.inclusions || 'No inclusions added yet.' }}</p>
+          }
+        </div>
+
         @if (vendor.notes) {
           <div class="section-block">
-            <h3 class="section-heading">Description</h3>
+            <h3 class="section-heading">Additional Notes</h3>
             <p class="section-text">{{ vendor.notes }}</p>
           </div>
         }
@@ -199,8 +237,30 @@
         <textarea [(ngModel)]="editVendor.notes" placeholder="Any extra details..."></textarea>
       </div>
       <div class="form-group">
-        <label>Photo URLs (one per line, max 5)</label>
-        <textarea [(ngModel)]="editPhotosText" placeholder="https://example.com/photo1.jpg&#10;https://example.com/photo2.jpg" rows="5"></textarea>
+        <label>Photos (max 3, 2MB each)</label>
+        <div class="photo-upload-area">
+          <!-- Existing photos -->
+          @for (url of existingPhotos; track $index) {
+            <div class="photo-preview">
+              <img [src]="url" alt="photo" />
+              <button class="remove-photo" (click)="removeExistingPhoto($index)">✕</button>
+            </div>
+          }
+          <!-- New photo previews -->
+          @for (url of photoPreviewUrls; track $index) {
+            <div class="photo-preview">
+              <img [src]="url" alt="preview" />
+              <button class="remove-photo" (click)="removeNewPhoto($index)">✕</button>
+            </div>
+          }
+          <!-- Add more button -->
+          @if (existingPhotos.length + selectedPhotos.length < 3) {
+            <label class="photo-add-btn">
+              <input type="file" accept="image/*" multiple (change)="onPhotosSelected($event)" hidden />
+              <span>+ Add Photo</span>
+            </label>
+          }
+        </div>
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" (click)="closeEditModal()">Cancel</button>

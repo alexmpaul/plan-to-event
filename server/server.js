@@ -1,12 +1,14 @@
+require('dotenv').config({ path: __dirname + '/.env' });
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
-const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const multer = require('multer');
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
 
 // ── FIREBASE ADMIN INIT ──
 const credentials = process.env.FIREBASE_CREDENTIALS
@@ -18,6 +20,70 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
+
+// ── CLOUDINARY INIT ──
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// ── MULTER (memory storage) ──
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage,
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only images are allowed'));
+    }
+  }
+});
+
+// ── PHOTO UPLOAD ──
+app.post('/api/upload', upload.array('photos', 3), async (req, res) => {
+  try {
+    const uploadPromises = req.files.map(file => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'plan-to-event/vendors',
+            transformation: [{ quality: 100, fetch_format: 'auto' }]
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result.secure_url);
+          }
+        );
+        stream.end(file.buffer);
+      });
+    });
+
+    const urls = await Promise.all(uploadPromises);
+    res.json({ urls });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to upload photos' });
+  }
+});
+
+// ── DELETE PHOTO ──
+app.delete('/api/upload', async (req, res) => {
+  try {
+    const { url } = req.body;
+    // Extract public_id from URL
+    const parts = url.split('/');
+    const filename = parts[parts.length - 1].split('.')[0];
+    const publicId = `plan-to-event/vendors/${filename}`;
+    await cloudinary.uploader.destroy(publicId);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete photo' });
+  }
+});
 
 // ── CATEGORIES ──
 app.get('/api/categories', async (req, res) => {
@@ -103,6 +169,8 @@ app.post('/api/vendors', async (req, res) => {
       notes: req.body.notes || '',
       instaId: req.body.instaId || '',
       photos: req.body.photos || [],
+      description: req.body.description || '',
+      inclusions: req.body.inclusions || '',
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     };
     const ref = await db.collection('vendors').add(vendorData);
@@ -126,6 +194,8 @@ app.put('/api/vendors/:id', async (req, res) => {
       notes: req.body.notes || '',
       instaId: req.body.instaId || '',
       photos: req.body.photos || [],
+      description: req.body.description || '',
+      inclusions: req.body.inclusions || '',
     };
     await db.collection('vendors').doc(req.params.id).update(vendorData);
     res.json({ id: req.params.id, ...vendorData });

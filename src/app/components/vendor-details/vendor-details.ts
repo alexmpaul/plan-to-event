@@ -30,6 +30,15 @@ export class VendorDetails implements OnInit {
 
   activePhoto = 0;
   activeSection = '';
+  selectedPhotos: File[] = [];
+  photoPreviewUrls: string[] = [];
+  existingPhotos: string[] = [];
+  uploadingPhotos = false;
+
+  editingDescription = false;
+  editingInclusions = false;
+  tempDescription = '';
+  tempInclusions = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -172,37 +181,125 @@ export class VendorDetails implements OnInit {
     }
   }
 
-  openEditModal() {
-    this.editVendor = { ...this.vendor };
-    this.editPhotosText = (this.vendor.photos || []).join('\n');
-    this.showEditModal = true;
-    this.cdr.detectChanges();
-  }
-
   closeEditModal() {
     this.showEditModal = false;
     this.cdr.detectChanges();
   }
 
-  saveEdit() {
+  onPhotosSelected(event: any) {
+    const files: FileList = event.target.files;
+    const maxSize = 2 * 1024 * 1024;
+    const totalAllowed = 3 - this.existingPhotos.length;
+
+    for (let i = 0; i < files.length; i++) {
+      if (this.selectedPhotos.length >= totalAllowed) {
+        alert('Maximum 3 photos allowed');
+        break;
+      }
+      if (files[i].size > maxSize) {
+        alert(`${files[i].name} exceeds 2MB limit`);
+        continue;
+      }
+      this.selectedPhotos.push(files[i]);
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.photoPreviewUrls.push(e.target.result);
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(files[i]);
+    }
+    this.cdr.detectChanges();
+  }
+
+  removeExistingPhoto(index: number) {
+    this.existingPhotos.splice(index, 1);
+    this.cdr.detectChanges();
+  }
+
+  removeNewPhoto(index: number) {
+    this.selectedPhotos.splice(index, 1);
+    this.photoPreviewUrls.splice(index, 1);
+    this.cdr.detectChanges();
+  }
+
+  openEditModal() {
+    this.editVendor = { ...this.vendor };
+    this.existingPhotos = [...(this.vendor.photos || [])];
+    this.selectedPhotos = [];
+    this.photoPreviewUrls = [];
+    this.showEditModal = true;
+    this.cdr.detectChanges();
+  }
+
+  async saveEdit() {
     if (!this.editVendor.name || !this.editVendor.place || !this.editVendor.phone) {
       alert('Name, place and phone are required!');
       return;
     }
-    const photos = this.editPhotosText
-      .split('\n')
-      .map(p => p.trim())
-      .filter(p => p.length > 0)
-      .slice(0, 5);
+
+    this.uploadingPhotos = true;
+    let newPhotoUrls: string[] = [];
+
+    if (this.selectedPhotos.length > 0) {
+      try {
+        const response = await this.api.uploadPhotos(this.selectedPhotos).toPromise();
+        newPhotoUrls = response?.urls || [];
+      } catch (e) {
+        alert('Failed to upload photos.');
+        this.uploadingPhotos = false;
+        return;
+      }
+    }
+
+    const photos = [...this.existingPhotos, ...newPhotoUrls].slice(0, 3);
 
     this.api.updateVendor(this.vendor.id, { ...this.editVendor, photos }).subscribe({
       next: (updated) => {
         this.vendor = updated;
         this.activePhoto = 0;
         this.closeEditModal();
+        this.uploadingPhotos = false;
         this.cdr.detectChanges();
       },
-      error: (err) => console.error(err)
+      error: () => { this.uploadingPhotos = false; }
+    });
+  }
+
+  startEditDescription() {
+    this.tempDescription = this.vendor.description || '';
+    this.editingDescription = true;
+    this.cdr.detectChanges();
+  }
+
+  async saveDescription() {
+    this.api.updateVendor(this.vendor.id, { 
+      ...this.vendor, 
+      description: this.tempDescription 
+    }).subscribe({
+      next: (updated) => {
+        this.vendor = updated;
+        this.editingDescription = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  startEditInclusions() {
+    this.tempInclusions = this.vendor.inclusions || '';
+    this.editingInclusions = true;
+    this.cdr.detectChanges();
+  }
+
+  async saveInclusions() {
+    this.api.updateVendor(this.vendor.id, { 
+      ...this.vendor, 
+      inclusions: this.tempInclusions 
+    }).subscribe({
+      next: (updated) => {
+        this.vendor = updated;
+        this.editingInclusions = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 

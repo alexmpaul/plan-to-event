@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class Api {
-  private base = 'https://plan-to-event-production.up.railway.app/api';
+  //private base = 'https://plan-to-event-production.up.railway.app/api';
+
+  private base = 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) {}
 
@@ -34,5 +36,15 @@ export class Api {
 
   deleteVendor(id: string): Observable<any> {
     return this.http.delete(`${this.base}/vendors/${id}`);
+  }
+
+  uploadPhotos(files: File[]): Observable<{ urls: string[] }> {
+    const formData = new FormData();
+    files.forEach(file => formData.append('photos', file));
+    return this.http.post<{ urls: string[] }>(`${this.base}/upload`, formData);
+  }
+
+  deletePhoto(url: string): Observable<any> {
+    return this.http.delete(`${this.base}/upload`, { body: { url } });
   }
 }
