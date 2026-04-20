@@ -1,0 +1,73 @@
+<div class="overview">
+  <div class="overview-grid">
+
+    <!-- VENDOR STATUS -->
+    <div class="card vendor-status-card">
+      <h3 class="card-title">Vendor Status</h3>
+      <div class="vendor-circles">
+        @for (cat of categories; track cat.id) {
+          <div class="vendor-circle-item">
+            <div class="circle-wrap"
+              [class.booked]="isCategoryBooked(cat.id)"
+              [class.shortlisted]="isCategoryShortlisted(cat.id) && !isCategoryBooked(cat.id)">
+              <img [src]="'assets/icons-png/' + cat.name + '.png'"
+                [alt]="cat.name" class="circle-icon"
+                onerror="this.style.display='none'" />
+            </div>
+          </div>
+        }
+      </div>
+      <div class="legend">
+        <span class="legend-item"><span class="dot booked"></span> Booked</span>
+        <span class="legend-item"><span class="dot shortlisted"></span> Shortlisted</span>
+        <span class="legend-item"><span class="dot empty"></span> Pending</span>
+      </div>
+    </div>
+
+    <!-- TASK LIST -->
+    <div class="card task-card">
+      <h3 class="card-title">Task List</h3>
+      <div class="task-header-row">
+        <span class="task-col-name">Name</span>
+        <span class="task-col-due">Due</span>
+        <span class="task-col-status">Status</span>
+      </div>
+      <div class="task-list">
+        @for (task of tasks; track task.id) {
+          <div class="task-row">
+            <div class="task-check">
+              <input type="checkbox" [checked]="task.completed" (change)="toggleTask(task)" />
+            </div>
+            <span class="task-name" [class.completed]="task.completed">{{ task.name }}</span>
+            <span class="task-due">{{ task.dueDate || '—' }}</span>
+            <span class="task-status" [class.done]="task.completed">
+              {{ task.completed ? 'Completed' : 'Pending' }}
+            </span>
+            <button class="task-delete" (click)="deleteTask(task)">✕</button>
+          </div>
+        }
+      </div>
+
+      <!-- ADD TASK -->
+      <div class="add-task-row">
+        <input [(ngModel)]="newTaskName" placeholder="Add task..." class="task-input" (keyup.enter)="addTask()" />
+        <input [(ngModel)]="newTaskDue" type="date" class="task-date-input" />
+        <button class="task-add-btn" (click)="addTask()">Add</button>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="card notes-card">
+      <h3 class="card-title">Notes</h3>
+      <textarea
+        [(ngModel)]="dashboardNotes"
+        placeholder="Add your notes here..."
+        class="notes-textarea">
+      </textarea>
+      <button class="save-notes-btn" (click)="saveNotes()" [disabled]="savingNotes">
+        {{ savingNotes ? 'Saving...' : 'Save Notes' }}
+      </button>
+    </div>
+
+  </div>
+</div>

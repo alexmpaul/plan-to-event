@@ -1,17 +1,39 @@
 .page {
   min-height: 100vh;
   background-color: #f9f5f5;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
-/* ── NAVBAR ── */
+/* ───────── NAVBAR ───────── */
 .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--primary);
+  padding: 13px 60px;
+  color: white;
+  z-index: 3;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* ── EVENT DETAILS NAVBAR ── */
+.event-navbar {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 16px 32px;
   background: white;
-  border-bottom: 1px solid #f0e0e0;
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -21,14 +43,14 @@
   background: transparent;
   border: none;
   font-size: 1.2rem;
-  color: #7b2d52;
+  color: var(--primary);
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 8px;
   transition: background 0.2s;
 }
 
-.nav-actions {
+.event-nav-actions {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -37,30 +59,30 @@
 
 .create-event-btn {
   background: transparent;
-  border: 1.5px solid #7b2d52;
-  color: #7b2d52;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
   padding: 7px 16px;
   border-radius: 20px;
   font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
   transition: all 0.2s;
 }
 
 .create-event-btn:hover {
-  background: #7b2d52;
+  background: var(--primary);
   color: white;
 }
 
 .back-btn:hover {
-  background: #f9e4e4;
+  background: var(--primary-pale);
 }
 
-.logo {
+.heading {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #7b2d52;
+  color: var(--primary);
 }
 
 .event-name-btn {
@@ -68,9 +90,9 @@
   border: none;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #7b2d52;
+  color: var(--primary);
   cursor: pointer;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
   outline: none;
   appearance: none;
   padding-right: 16px;
@@ -86,7 +108,7 @@
   overflow-x: auto;
   padding: 16px 32px;
   background: white;
-  border-bottom: 1px solid #f0e0e0;
+  border-bottom: 1px solid var(--border);
   scrollbar-width: none;
 }
 
@@ -109,8 +131,8 @@
 }
 
 .cat-item.active .cat-circle {
-  background: #f9e4e4;
-  border: 2px solid #7b2d52;
+  background: var(--primary-pale);
+  border: 2px solid var(--primary);
 }
 
 .cat-circle {
@@ -142,7 +164,7 @@
 }
 
 .cat-item.active .cat-label {
-  color: #7b2d52;
+  color: var(--primary);
   font-weight: 600;
 }
 
@@ -152,19 +174,19 @@
   align-items: center;
   gap: 16px;
   padding: 10px 32px;
-  background: #f9e4e4;
+  background: var(--primary-pale);
   flex-wrap: wrap;
 }
 
 .event-name {
   font-weight: 700;
   font-size: 0.95rem;
-  color: #7b2d52;
+  color: var(--primary);
 }
 
 .event-meta {
   font-size: 0.82rem;
-  color: #888;
+  color: var(--text-muted);
 }
 
 /* ── CONTENT ── */
@@ -195,7 +217,7 @@
 
 .vendor-tile:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  box-shadow: var(--shadow-lg);
 }
 
 .vendor-info-section {
@@ -206,7 +228,7 @@
 .vendor-name {
   font-size: 1.05rem;
   font-weight: 600;
-  color: #2d2d2d;
+  color: var(--text-mid);
   margin-bottom: 10px;
 }
 
@@ -218,7 +240,7 @@
 
 .vendor-price {
   font-size: 0.85rem;
-  color: #7b2d52;
+  color: var(--primary);
   font-weight: 500;
   margin-top: 6px;
 }
@@ -279,43 +301,43 @@
   width: 90px;
   height: 90px;
   border-radius: 10px;
-  border: 1.5px dashed #ddd;
+  border: 1.5px dashed var(--border-mid);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   font-size: 0.82rem;
-  color: #aaa;
+  color: var(--text-faint);
   transition: all 0.2s;
 }
 
 .photo-add-btn:hover {
-  border-color: #7b2d52;
-  color: #7b2d52;
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .add-btn {
   padding: 7px 18px;
   border-radius: 20px;
-  border: 1.5px solid #7b2d52;
+  border: 1.5px solid var(--primary);
   background: white;
-  color: #7b2d52;
+  color: var(--primary);
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
   transition: all 0.2s;
 }
 
 .add-btn:hover {
-  background: #7b2d52;
+  background: var(--primary);
   color: white;
 }
 
 .add-btn.added {
-  background: #7b2d52;
+  background: var(--primary);
   color: white;
-  border-color: #7b2d52;
+  border-color: var(--primary);
 }
 
 /* ── EMPTY STATE ── */
@@ -331,7 +353,7 @@
 
 .empty-text {
   font-size: 1.1rem;
-  color: #888;
+  color: var(--text-muted);
 }
 
 /* ── FAB ── */
@@ -342,7 +364,7 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #7b2d52;
+  background: var(--primary);
   color: white;
   font-size: 1.8rem;
   border: none;
@@ -355,7 +377,7 @@
 }
 
 .fab:hover {
-  background: #9b3d62;
+  background: var(--primary-hover);
   transform: scale(1.1);
 }
 
@@ -390,7 +412,7 @@
 .modal-title {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #2d2d2d;
+  color: var(--text-mid);
   margin-bottom: 24px;
 }
 
@@ -403,7 +425,7 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #aaa;
+  color: var(--text-faint);
   margin-bottom: 6px;
   font-weight: 500;
 }
@@ -413,20 +435,20 @@
 .form-group textarea {
   width: 100%;
   padding: 10px 14px;
-  border: 1.5px solid #f0e0e0;
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   font-size: 0.9rem;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
   outline: none;
   transition: border-color 0.2s;
-  background: #fdfafa;
-  color: #2d2d2d;
+  background: var(--bg-input);
+  color: var(--text-mid);
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: #7b2d52;
+  border-color: var(--primary);
   background: white;
 }
 
@@ -445,18 +467,18 @@
   flex: 1;
   padding: 12px;
   border-radius: 12px;
-  border: 1.5px solid #f0e0e0;
+  border: 1.5px solid var(--border);
   background: white;
-  color: #aaa;
+  color: var(--text-faint);
   cursor: pointer;
   font-size: 0.88rem;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
   transition: all 0.2s;
 }
 
 .btn-cancel:hover {
-  border-color: #7b2d52;
-  color: #7b2d52;
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .btn-save {
@@ -464,17 +486,17 @@
   padding: 12px;
   border-radius: 12px;
   border: none;
-  background: #7b2d52;
+  background: var(--primary);
   color: white;
   cursor: pointer;
   font-size: 0.88rem;
   font-weight: 600;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
   transition: all 0.2s;
 }
 
 .btn-save:hover {
-  background: #9b3d62;
+  background: var(--primary-hover);
 }
 
 @media (max-width: 600px) {

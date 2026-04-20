@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Api } from '../../services/api';
+import { ApiService } from '../../services/api';
 import { AuthService } from '../../services/auth';
 import { Navbar } from '../../shared/navbar/navbar';
 import { LoginModal } from '../../shared/login-modal/login-modal';
@@ -46,7 +46,7 @@ export class VendorDetails implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private api: Api,
+    private api: ApiService,
     private router: Router,
     private cdr: ChangeDetectorRef,
     public auth: AuthService
@@ -175,6 +175,10 @@ export class VendorDetails implements OnInit {
 
   goToDashboard() {
     this.router.navigate(['/dashboard']);
+  }
+
+  goHome() {
+    this.router.navigate(['/']);
   }
 
   deleteVendor() {

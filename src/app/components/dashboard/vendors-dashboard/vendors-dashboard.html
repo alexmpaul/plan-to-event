@@ -1,0 +1,106 @@
+<div class="dashboard-vendors">
+
+  <!-- TOP ROW -->
+  <div class="section-row">
+    <!-- VENDOR BOOKING STATUS -->
+    <div class="card status-card">
+      <h3 class="card-title">Vendor Booking Status</h3>
+      <div class="status-circles">
+        @for (cat of categories; track cat.id) {
+          <div class="status-circle-item" (click)="goToVendors(cat.id)">
+            <div class="circle-wrap"
+              [class.booked]="isCategoryBooked(cat.id)"
+              [class.shortlisted]="isCategoryShortlisted(cat.id) && !isCategoryBooked(cat.id)">
+              <img [src]="'assets/icons-png/' + cat.name + '.png'"
+                [alt]="cat.name" class="circle-icon"
+                onerror="this.style.display='none'" />
+            </div>
+            <span class="circle-label">{{ cat.name }}</span>
+          </div>
+        }
+      </div>
+      <div class="legend">
+        <span class="legend-item"><span class="dot booked"></span> Booked</span>
+        <span class="legend-item"><span class="dot shortlisted"></span> Shortlisted</span>
+        <span class="legend-item"><span class="dot empty"></span> Pending</span>
+      </div>
+    </div>
+
+    <!-- SHORTLISTED — only finalized vendors -->
+    <div class="card shortlisted-card">
+      <h3 class="card-title">Finalized Vendors</h3>
+      @if (hasAnyFinalized()) {
+        <div class="shortlisted-grid">
+          @for (cat of categories; track cat.id) {
+            @if (getSelectedVendor(cat.id)) {
+              <div class="shortlisted-item" (click)="goToDetail(getSelectedVendor(cat.id).vendorId)">
+                <img [src]="'assets/icons-png/' + cat.name + '.png'"
+                  class="shortlisted-icon" onerror="this.style.display='none'" />
+                <span class="shortlisted-name">{{ getSelectedVendor(cat.id).name }}</span>
+              </div>
+            }
+          }
+        </div>
+      } @else {
+        <div class="empty-state">No vendors finalized yet. Select a vendor from the list below.</div>
+      }
+    </div>
+  </div>
+
+  <!-- VENDORS LIST — ALL CATEGORIES -->
+  <div class="vendors-list-section">
+    <h3 class="section-title">Vendors List</h3>
+    <div class="category-cards-scroll">
+      @for (cat of categories; track cat.id) {
+        <div class="category-vendor-card">
+          <div class="cat-card-header" (click)="goToVendors(cat.id)">
+            <img [src]="'assets/icons-png/' + cat.name + '.png'"
+              class="cat-header-icon" onerror="this.style.display='none'" />
+            <span>{{ cat.name }}</span>
+          </div>
+          <div class="vendor-table">
+            <div class="vendor-table-header">
+              <span>Vendor</span>
+              <span>Quote Price</span>
+              <span>Action</span>
+            </div>
+            @for (vendor of getVendorsByCategory(cat.id); track vendor.id) {
+              <div class="vendor-table-row">
+                    <div class="vendor-radio">
+                        <input type="checkbox"
+                        [checked]="vendor.booked"
+                        (change)="toggleBooked(vendor)"
+                        style="accent-color: #970747" />
+                        <span class="vendor-table-name" (click)="goToDetail(vendor.vendorId)">
+                        {{ vendor.name }}
+                        </span>
+                    </div>
+                    <div class="price-cell">
+                        @if (vendor.editingPrice) {
+                        <input
+                            [(ngModel)]="vendor.tempPrice"
+                            class="price-input"
+                            (blur)="savePrice(vendor)"
+                            (keyup.enter)="savePrice(vendor)"
+                            placeholder="Enter price" />
+                        } @else {
+                        <span class="price-text" (click)="startEditPrice(vendor)">
+                            {{ vendor.quotedPrice || 'Add price' }}
+                        </span>
+                        }
+                    </div>
+                    <button class="remove-btn" (click)="removeVendor(vendor)">⊖</button>
+                </div>
+            }
+            @if (getVendorsByCategory(cat.id).length === 0) {
+              <div class="empty-cat-row" (click)="goToVendors(cat.id)">
+                + Add vendor
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+</div>

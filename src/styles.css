@@ -1,18 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
   margin: 0;
   padding: 0;
+  font-family: 'Poppins', sans-serif;
 }
 
-.ql-editor {
-  padding: 0 !important;
+:root {
+  /* ── PRIMARY ── */
+  --primary: #970747;
+  --primary-hover: #b5195e;
+  --primary-light: #fdf0f5;
+  --primary-pale: #f9e4e4;
+
+  /* ── TEXT ── */
+  --text-dark: #1a1a1a;
+  --text-mid: #2d2d2d;
+  --text-muted: #888;
+  --text-faint: #aaa;
+
+  /* ── BORDERS ── */
+  --border: #f0e0e0;
+  --border-mid: #ddd;
+
+  /* ── BACKGROUNDS ── */
+  --bg-page: #f5f0f0;
+  --bg-card: #ffffff;
+  --bg-input: #fdfafa;
+
+  /* ── STATUS ── */
+  --success: #2ecc71;
+  --danger: #c0504a;
+  --danger-light: #fff0f0;
+
+  /* ── SHADOWS ── */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
 }
 
-.ql-editor p {
-  margin-bottom: 8px;
-}
+.ql-editor { padding: 0 !important; }
+.ql-editor p { margin-bottom: 8px; }

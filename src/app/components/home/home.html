@@ -5,7 +5,12 @@
     <div class="logo">PlanToEvent</div>
 
     <div class="nav-actions">
-      <button class="nav-btn outline" (click)="goToLogin()">Login</button>
+      @if (isLoggedIn()) {
+        <button class="nav-btn" (click)="goToDashboard()">Dashboard</button>
+        <app-navbar></app-navbar>
+      } @else {
+        <button class="nav-btn" (click)="goToLogin()">Login</button>
+      }
     </div>
   </nav>
 

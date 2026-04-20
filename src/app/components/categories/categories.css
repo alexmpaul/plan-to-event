@@ -1,9 +1,9 @@
 
 .vendors-section {
   min-height: 100vh;
-  background-color: #f9e4e4;
+  background-color: var(--primary-pale);
   padding: 64px 32px;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
   position: relative;
 }
 
@@ -11,7 +11,7 @@
   text-align: center;
   font-size: 1.6rem;
   font-weight: 700;
-  color: #2d2d2d;
+  color: var(--text-mid);
   margin-bottom: 48px;
 }
 
@@ -45,7 +45,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-md);
   transition: box-shadow 0.2s;
 }
 
@@ -66,7 +66,7 @@
 .cat-name {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #2d2d2d;
+  color: var(--text-mid);
   text-align: center;
 }
 
@@ -78,7 +78,7 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #7b2d52;
+  background: var(--primary);
   color: white;
   font-size: 1.8rem;
   border: none;
@@ -91,7 +91,7 @@
 }
 
 .fab:hover {
-  background: #9b3d62;
+  background: var(--primary-hover);
   transform: scale(1.1);
 }
 
@@ -124,7 +124,7 @@
 .modal-title {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #2d2d2d;
+  color: var(--text-mid);
   margin-bottom: 24px;
 }
 
@@ -137,7 +137,7 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #aaa;
+  color: var(--text-faint);
   margin-bottom: 6px;
   font-weight: 500;
 }
@@ -145,18 +145,18 @@
 .form-group input {
   width: 100%;
   padding: 10px 14px;
-  border: 1.5px solid #f0e0e0;
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   font-size: 0.9rem;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
   outline: none;
   transition: border-color 0.2s;
-  background: #fdfafa;
-  color: #2d2d2d;
+  background: var(--bg-input);
+  color: var(--text-mid);
 }
 
 .form-group input:focus {
-  border-color: #7b2d52;
+  border-color: var(--primary);
   background: white;
 }
 
@@ -170,18 +170,18 @@
   flex: 1;
   padding: 12px;
   border-radius: 12px;
-  border: 1.5px solid #f0e0e0;
+  border: 1.5px solid var(--border);
   background: white;
-  color: #aaa;
+  color: var(--text-faint);
   cursor: pointer;
   font-size: 0.88rem;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
   transition: all 0.2s;
 }
 
 .btn-cancel:hover {
-  border-color: #7b2d52;
-  color: #7b2d52;
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .btn-save {
@@ -189,17 +189,17 @@
   padding: 12px;
   border-radius: 12px;
   border: none;
-  background: #7b2d52;
+  background: var(--primary);
   color: white;
   cursor: pointer;
   font-size: 0.88rem;
   font-weight: 600;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
   transition: all 0.2s;
 }
 
 .btn-save:hover {
-  background: #9b3d62;
+  background: var(--primary-hover);
 }
 
 @media (max-width: 768px) {

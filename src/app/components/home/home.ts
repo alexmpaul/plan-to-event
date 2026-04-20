@@ -55,6 +55,11 @@ export class Home {
     });
   }
 
+  goToDashboard() {
+    this.router.navigate(['/dashboard'], {
+    });
+  }
+
   async logout() {
     await this.auth.logout();
     this.cdr.detectChanges();

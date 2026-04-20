@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Api } from '../../services/api';
+import { ApiService } from '../../services/api';
 import { AuthService } from '../../services/auth';
 import { FirebaseService } from '../../services/firebase';
 import { Navbar } from '../../shared/navbar/navbar';
@@ -17,7 +17,7 @@ import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc
   templateUrl: './vendors.html',
   styleUrl: './vendors.css'
 })
-export class Vendors implements OnInit {
+export class VendorsList implements OnInit {
   vendors: any[] = [];
   categories: any[] = [];
   category: any = null;
@@ -43,7 +43,7 @@ export class Vendors implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private api: Api,
+    private api: ApiService,
     private router: Router,
     private cdr: ChangeDetectorRef,
     public auth: AuthService,
@@ -214,6 +214,15 @@ export class Vendors implements OnInit {
 
   goBack() {
     this.router.navigate(['/']);
+  }
+
+   goHome() {
+    this.router.navigate(['/']);
+  }
+
+   goToDashboard() {
+    this.router.navigate(['/dashboard'], {
+    });
   }
 
   onPhotosSelected(event: any) {
