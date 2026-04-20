@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Api } from '../../services/api';
+import { ApiService } from '../../services/api';
 import { AuthService } from '../../services/auth';
 
 @Component({
@@ -18,7 +18,7 @@ export class Categories implements OnInit {
   newCategory = { name: '', icon: '' };
 
   constructor(
-    private api: Api,
+    private api: ApiService,
     private router: Router,
     private cdr: ChangeDetectorRef,
     public auth: AuthService

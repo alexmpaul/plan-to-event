@@ -1,0 +1,67 @@
+<div class="page">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo" (click)="goHome()">PlanToEvent</div>
+    <div class="nav-actions">
+      <app-navbar></app-navbar>
+    </div>
+  </nav>
+
+  @if (activeEvent) {
+    <!-- EVENT HEADER -->
+    <div class="event-header">
+      <div class="event-left">
+        <div class="event-selector-row">
+            <select class="event-dropdown" (change)="switchEventByIndex($any($event.target).selectedIndex)">
+                @for (event of events; track event.id) {
+                <option [selected]="event.id === activeEvent.id">{{ event.name }}</option>
+                }
+            </select>
+            <button class="new-event-btn" (click)="router.navigate(['/create-event'])">+ New Event</button>
+            <div class="event-meta">
+                @if (activeEvent.location) {
+                    <span>📍 {{ activeEvent.location }}</span>
+                }
+                @if (activeEvent.guests) {
+                    <span>👥 {{ activeEvent.guests }} Guests</span>
+                }
+                @if (activeEvent.type) {
+                    <span>💍 {{ activeEvent.type }}</span>
+                }
+            </div>
+        </div>
+        
+      </div>
+
+      <!-- SECTION TABS -->
+      <div class="section-tabs">
+        <button class="section-tab" [class.active]="activeTab === 'overview'" (click)="switchTab('overview')">OverView</button>
+        <button class="section-tab" [class.active]="activeTab === 'vendors'" (click)="switchTab('vendors')">Vendors</button>
+        <button class="section-tab" [class.active]="activeTab === 'guestlist'" (click)="switchTab('guestlist')">Guest List</button>
+        <!-- <button class="section-tab" [class.active]="activeTab === 'budget'" (click)="switchTab('budget')">Budget</button> -->
+      </div>
+    </div>
+
+    <!-- TAB CONTENT -->
+    <div class="tab-content">
+      @if (activeTab === 'overview') {
+        <app-overview [event]="activeEvent"></app-overview>
+      }
+      @if (activeTab === 'vendors') {
+        <app-vendors-dashboard [event]="activeEvent"></app-vendors-dashboard>
+      }
+      @if (activeTab === 'guestlist') {
+        <app-guestlist [event]="activeEvent"></app-guestlist>
+      }
+      @if (activeTab === 'budget') {
+        <app-budget [event]="activeEvent"></app-budget>
+      }
+    </div>
+  } @else {
+    <div class="no-events">
+      <p>No events yet!</p>
+      <button (click)="router.navigate(['/create-event'])">Create your first event</button>
+    </div>
+  }
+</div>

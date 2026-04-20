@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class Api {
+export class ApiService {
   private base = 'https://plan-to-event-production.up.railway.app/api';
 
   // private base = 'http://localhost:3000/api';

@@ -1,11 +1,18 @@
 <div class="page">
   <!-- NAVBAR -->
-  <div class="navbar">
-    <button class="back-btn" (click)="goBack()">← </button>
-    <div class="logo">Explore vendors</div>
+  <nav class="navbar">
+    <div class="logo" (click)="goHome()">PlanToEvent</div>
     <div class="nav-actions">
-      <button class="create-event-btn" (click)="createEvent()">Create Event</button>
       <app-navbar></app-navbar>
+    </div>
+  </nav>
+
+  <!-- EVENT DETAILS HEADER -->
+  <div class="event-navbar">
+    <button class="back-btn" (click)="goBack()">← </button>
+    <div class="heading">Explore vendors</div>
+    <div class="event-nav-actions">
+      <button class="create-event-btn" (click)="createEvent()">Create Event</button>
   </div>
   </div>
 

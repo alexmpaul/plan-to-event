@@ -7,7 +7,7 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #7b2d52;
+  background: #970747;
   color: white;
   display: flex;
   align-items: center;
@@ -16,13 +16,13 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
   box-shadow: 0 2px 8px rgba(123,45,82,0.3);
 }
 
 .user-avatar.guest {
   background: #f0e0e8;
-  color: #7b2d52;
+  color: #970747;
   font-size: 1.1rem;
 }
 
@@ -62,7 +62,7 @@
 
 /* ── SIDEBAR HEADER ── */
 .sidebar-header {
-  background: #7b2d52;
+  background: #970747;
   padding: 40px 24px 24px;
   color: white;
 }
@@ -107,14 +107,14 @@
   padding: 14px 24px;
   cursor: pointer;
   font-size: 0.92rem;
-  color: #2d2d2d;
-  font-family: 'Segoe UI', sans-serif;
+  color: var(--text-mid);
+  font-family: 'Poppins', sans-serif;
   transition: background 0.2s;
 }
 
 .menu-item:hover {
   background: #f9f0f4;
-  color: #7b2d52;
+  color: #970747;
 }
 
 .menu-icon {
@@ -124,14 +124,14 @@
 }
 
 .menu-divider {
-  border-top: 1px solid #f0e0e0;
+  border-top: 1px solid var(--border);
   margin: 8px 24px;
 }
 
 .menu-item.danger {
-  color: #c0504a;
+  color: var(--danger);
 }
 
 .menu-item.danger:hover {
-  background: #fff0f0;
+  background: var(--danger-light);
 }
