@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  private base = 'https://plan-to-event-production.up.railway.app/api';
+  private base = 'https://plan-to-event-api.onrender.com/api';
+  
+  // private base = 'https://plan-to-event-production.up.railway.app/api';
 
   // private base = 'http://localhost:3000/api';
 
