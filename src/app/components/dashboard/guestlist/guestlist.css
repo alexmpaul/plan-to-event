@@ -371,6 +371,59 @@
 .cat-action-btn:hover { background: var(--primary-light); }
 .cat-action-btn.danger:hover { background: var(--danger-light); }
 
+.contact-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 175px;
+}
+
+.contact-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1px;
+  transition: color 0.2s;
+}
+
+.contact-link:hover { color: var(--primary-hover); }
+
+.contact-clear {
+  background: transparent;
+  border: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  font-size: 0.7rem;
+  padding: 2px;
+  transition: color 0.2s;
+}
+
+.contact-clear:hover { color: var(--danger); }
+
+.contact-input-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pick-contact-btn {
+  background: var(--primary-light);
+  border: none;
+  color: var(--primary);
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.pick-contact-btn:hover { background: var(--primary); color: white; }
+
 @media (max-width: 768px) {
   .content-row {
     grid-template-columns: 1fr;

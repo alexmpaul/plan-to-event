@@ -2,7 +2,8 @@ import { Component, Input, OnInit, OnChanges, ChangeDetectorRef } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth';
-import { getFirestore, collection, getDocs, query, where, addDoc, setDoc, doc, deleteDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, where, addDoc, setDoc, doc, deleteDoc, Firestore } from 'firebase/firestore';
+import { FirebaseService } from '../../../services/firebase';
 
 @Component({
   selector: 'app-guestlist',
@@ -19,6 +20,7 @@ export class Guestlist implements OnInit, OnChanges {
   guests: any[] = [];
   guestNotes = '';
   savingNotes = false;
+  saveTimeout: any = null;
 
   isLoading = true;
   editingCatId: string | null = null;
@@ -26,7 +28,8 @@ export class Guestlist implements OnInit, OnChanges {
 
   constructor(
     private auth: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private fireBaseService: FirebaseService
   ) {}
 
   ngOnInit() { this.loadData(); }
@@ -145,7 +148,11 @@ export class Guestlist implements OnInit, OnChanges {
       where('userId', '==', uid)
     );
     const snap = await getDocs(q);
-    this.guests = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    this.guests = snap.docs.map(d => ({ 
+      id: d.id,
+      ...d.data(),
+      isEditingContact: !d.data()['contact']
+    }));
     this.cdr.detectChanges();
   }
 
@@ -155,7 +162,8 @@ export class Guestlist implements OnInit, OnChanges {
     const newGuest = {
       name: '', place: '', total: 0, expected: 0,
       contact: '', invited: false, remarks: '',
-      catId: this.activeGuestCat.id, userId: uid
+      catId: this.activeGuestCat.id, userId: uid,
+      isEditing: true
     };
     const ref = await addDoc(collection(db, 'guests'), newGuest);
     this.guests.push({ id: ref.id, ...newGuest });
@@ -166,6 +174,7 @@ export class Guestlist implements OnInit, OnChanges {
     const db = getFirestore();
     const { id, ...data } = guest;
     await setDoc(doc(db, 'guests', id), data);
+    await this.updateTotals();
     this.cdr.detectChanges();
   }
 
@@ -178,7 +187,13 @@ export class Guestlist implements OnInit, OnChanges {
     const db = getFirestore();
     await deleteDoc(doc(db, 'guests', guest.id));
     this.guests = this.guests.filter(g => g.id !== guest.id);
+    await this.updateTotals();
     this.cdr.detectChanges();
+  }
+
+  async updateTotals() {
+    const uid = this.auth.currentUser()?.uid;
+    await this.fireBaseService.updateGuestTotals(this.event.id, uid!);
   }
 
   // ── TOTALS ──
@@ -191,7 +206,9 @@ export class Guestlist implements OnInit, OnChanges {
   }
 
   getInvitedCount() {
-    return this.guests.filter(g => g.invited).length;
+    return this.guests
+    .filter(g => g.invited)
+    .reduce((sum, g) => sum + (parseInt(g.total) || 0), 0);
   }
 
   getAllTotals() {
@@ -231,5 +248,37 @@ export class Guestlist implements OnInit, OnChanges {
     }
     this.savingNotes = false;
     this.cdr.detectChanges();
+  }
+
+  async startEditContact(guest: any) {
+    guest.isEditing = true;
+    guest.contact = ''; 
+    await this.saveGuest(guest)
+    this.cdr.detectChanges();
+  }
+
+  async saveContact(guest: any) {
+    guest.isEditing = false;
+    await this.saveGuest(guest);
+    this.cdr.detectChanges();
+  }
+
+  isContactPickerSupported(): boolean {
+    return 'contacts' in navigator && 'ContactsManager' in window;
+  }
+
+  async pickContact(guest: any) {
+    try {
+      const contacts = await (navigator as any).contacts.select(['name', 'tel'], { multiple: false });
+      if (contacts.length > 0) {
+        const contact = contacts[0];
+        if (contact.name?.length) guest.name = contact.name[0];
+        if (contact.tel?.length) guest.contact = contact.tel[0];
+        await this.saveGuest(guest);
+        this.cdr.detectChanges();
+      }
+    } catch (e) {
+      console.error('Contact picker error:', e);
+    }
   }
 }

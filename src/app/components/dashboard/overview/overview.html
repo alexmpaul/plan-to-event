@@ -56,17 +56,41 @@
       </div>
     </div>
 
-    <!-- NOTES -->
-    <div class="card notes-card">
-      <h3 class="card-title">Notes</h3>
-      <textarea
-        [(ngModel)]="dashboardNotes"
-        placeholder="Add your notes here..."
-        class="notes-textarea">
-      </textarea>
-      <button class="save-notes-btn" (click)="saveNotes()" [disabled]="savingNotes">
-        {{ savingNotes ? 'Saving...' : 'Save Notes' }}
-      </button>
+    <!-- GUEST SUMMARY + NOTES ROW -->
+    <div class="bottom-row">
+
+        <!-- GUEST SUMMARY -->
+        <div class="card guest-summary-card">
+        <h3 class="card-title">Guest List</h3>
+        <div class="guest-totals-grid">
+            <div class="guest-total-item">
+            <div class="guest-total-label">Total</div>
+            <div class="guest-total-value">{{ totalGuests }}</div>
+            </div>
+            <div class="guest-total-item">
+            <div class="guest-total-label">Invited</div>
+            <div class="guest-total-value">{{ totalInvited }}</div>
+            </div>
+            <div class="guest-total-item">
+            <div class="guest-total-label">Expected</div>
+            <div class="guest-total-value">{{ totalExpected }}</div>
+            </div>
+        </div>
+        </div>
+
+        <!-- NOTES -->
+        <div class="card notes-card">
+        <h3 class="card-title">Notes</h3>
+        <textarea
+            [(ngModel)]="dashboardNotes"
+            placeholder="Add your notes here..."
+            class="notes-textarea">
+        </textarea>
+        <button class="save-notes-btn" (click)="saveNotes()" [disabled]="savingNotes">
+            {{ savingNotes ? 'Saving...' : 'Save Notes' }}
+        </button>
+        </div>
+
     </div>
 
   </div>
