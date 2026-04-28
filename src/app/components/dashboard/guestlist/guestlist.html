@@ -77,7 +77,32 @@
                         <td><input class="cell-input" [(ngModel)]="guest.place" (blur)="saveGuest(guest)" placeholder="Place" /></td>
                         <td><input class="cell-input num" [(ngModel)]="guest.total" (blur)="saveGuest(guest)" type="number" placeholder="0" /></td>
                         <td><input class="cell-input num" [(ngModel)]="guest.expected" (blur)="saveGuest(guest)" type="number" placeholder="0" /></td>
-                        <td><input class="cell-input" [(ngModel)]="guest.contact" (blur)="saveGuest(guest)" placeholder="Phone" /></td>
+                        <td>
+                            <div class="contact-cell">
+                                @if (!guest.isEditing && guest.contact) {
+                                <a class="contact-link" href="tel:{{ guest.contact }}">{{ guest.contact }}</a>
+                                <button class="contact-clear" (mousedown)="$event.preventDefault()" (click)="startEditContact(guest)">✕</button>
+                                } @else {
+                                <div class="contact-input-row">
+                                    <input 
+                                    class="cell-input" 
+                                    [(ngModel)]="guest.contact"
+                                    (blur)="saveContact(guest)"
+                                    (keyup.enter)="saveContact(guest)"
+                                    placeholder="Phone"
+                                    type="number" />
+                                    @if (isContactPickerSupported()) {
+                                    <button class="pick-contact-btn" (mousedown)="$event.preventDefault()" (click)="pickContact(guest)" title="Pick from contacts">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                        </svg>
+                                    </button>
+                                    }
+                                </div>
+                                }
+                            </div>
+                        </td>
                         <td class="invited-cell">
                         <input type="checkbox" [checked]="guest.invited" (change)="toggleInvited(guest)" style="accent-color: #970747" />
                         </td>

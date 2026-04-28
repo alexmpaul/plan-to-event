@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth';
 import { ApiService } from '../../../services/api';
 import { getFirestore, collection, getDocs, query, where, addDoc, setDoc, doc, deleteDoc } from 'firebase/firestore';
+import { FirebaseService } from '../../../services/firebase';
 
 @Component({
   selector: 'app-overview',
@@ -22,11 +23,15 @@ export class Overview implements OnInit, OnChanges {
   newTaskDue = '';
   dashboardNotes = '';
   savingNotes = false;
+  totalGuests = 0;
+  totalInvited = 0;
+  totalExpected = 0;
 
   constructor(
     private auth: AuthService,
     private api: ApiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private firebaseService: FirebaseService
   ) {}
 
   ngOnInit() {
@@ -43,7 +48,8 @@ export class Overview implements OnInit, OnChanges {
     await Promise.all([
       this.loadWishlistedVendors(),
       this.loadTasks(),
-      this.loadNotes()
+      this.loadNotes(),
+      this.loadGuestTotals()
     ]);
     this.cdr.detectChanges();
   }
@@ -168,4 +174,13 @@ export class Overview implements OnInit, OnChanges {
     this.savingNotes = false;
     this.cdr.detectChanges();
   }
+
+  async loadGuestTotals() {
+    const uid = this.auth.currentUser()?.uid;
+    const totals = await this.firebaseService.getGuestTotals(this.event.id, uid!);
+    this.totalGuests = totals['total'] || 0;
+    this.totalInvited = totals['invited'] || 0;
+    this.totalExpected = totals['expected'] || 0;
+    this.cdr.detectChanges();
+}
 }

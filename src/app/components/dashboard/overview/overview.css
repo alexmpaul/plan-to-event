@@ -5,8 +5,7 @@
 .overview-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
-  gap: 15px;
+  gap: 20px;
 }
 
 /* ── CARDS ── */
@@ -219,9 +218,7 @@
 .task-add-btn:hover { background: var(--primary-hover); }
 
 /* ── NOTES ── */
-.notes-card {
-  grid-column: 1 / -1;
-}
+
 
 .notes-textarea {
   width: 100%;
@@ -256,6 +253,43 @@
 
 .save-notes-btn:hover { background: var(--primary-hover); }
 .save-notes-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.bottom-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+}
+
+.guest-summary-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.guest-totals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.guest-total-item {
+  background: var(--primary);
+  border-radius: 12px;
+  padding: 16px 8px;
+  text-align: center;
+  color: white;
+}
+
+.guest-total-label {
+  font-size: 0.72rem;
+  opacity: 0.8;
+  margin-bottom: 6px;
+}
+
+.guest-total-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
 
 @media (max-width: 768px) {
   .overview-grid {

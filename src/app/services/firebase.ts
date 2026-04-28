@@ -103,10 +103,59 @@ export class FirebaseService {
   }
 
   async getUserEvents(): Promise<any[]> {
-  const uid = this.currentUser?.uid;
-  if (!uid) return [];
-  const q = query(collection(db, 'events'), where('userId', '==', uid));
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const uid = this.currentUser?.uid;
+    if (!uid) return [];
+    const q = query(collection(db, 'events'), where('userId', '==', uid));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }
+
+  async updateGuestTotals(eventId: string, uid: string) {
+    const db = getFirestore();
+    
+    const catSnap = await getDocs(query(
+      collection(db, 'guestCategories'),
+      where('eventId', '==', eventId),
+      where('userId', '==', uid)
+    ));
+    const catIds = catSnap.docs.map(d => d.id);
+
+    let total = 0, invited = 0, expected = 0;
+
+    for (const catId of catIds) {
+      const guestSnap = await getDocs(query(
+        collection(db, 'guests'),
+        where('catId', '==', catId),
+        where('userId', '==', uid)
+      ));
+      guestSnap.docs.forEach(d => {
+        const g = d.data();
+        const rowTotal = parseInt(g['total']) || 0;
+        const rowExpected = parseInt(g['expected']) || 0;
+        total += rowTotal;
+        expected += rowExpected;
+        if (g['invited']) invited += rowTotal;
+      });
+    }
+
+    const docId = `${eventId}_${uid}`;
+    await setDoc(doc(db, 'guestTotals', docId), {
+      total, invited, expected, eventId, userId: uid,
+      updatedAt: new Date()
+    });
+
+    return { total, invited, expected };
+  }
+
+async getGuestTotals(eventId: string, uid: string) {
+  const db = getFirestore();
+  const docId = `${eventId}_${uid}`;
+  try {
+    const snap = await getDoc(doc(db, 'guestTotals', docId));
+    if (snap.exists()) return snap.data();
+    return { total: 0, invited: 0, expected: 0 };
+  } catch(e) {
+    return { total: 0, invited: 0, expected: 0 };
+  }
 }
 }
